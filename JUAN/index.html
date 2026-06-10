@@ -169,7 +169,7 @@ function handScore(hand){
   while(sum>21&&aces>0){sum-=10;aces--;}
   return sum;
 }
-function drawCard(){if(deck.length===0){deck=buildDeck();usedCards=[];}const c=deck.pop();usedCards.push(c);return c;}
+function drawCard(addToUsed=true){if(deck.length===0){deck=buildDeck();usedCards=[];}const c=deck.pop();if(addToUsed)usedCards.push(c);return c;}
 function cardKey(c){return c.suit.n+'-'+c.rank;}
 
 function computeVisible(){
@@ -238,7 +238,7 @@ function startHand(){
   if(!ctx)initAudio();
   handOver=false;gameActive=true;dealerRevealed=false;
   playerHand=[drawCard(),drawCard()];
-  dealerHand=[drawCard(),drawCard()];
+  dealerHand=[drawCard(),drawCard(false)];
   document.getElementById('result-area').innerHTML='';
   document.getElementById('btn-hit').disabled=false;
   document.getElementById('btn-stand').disabled=false;
@@ -265,20 +265,25 @@ function stand(){
   gameActive=false;
   document.getElementById('btn-hit').disabled=true;
   document.getElementById('btn-stand').disabled=true;
-  dealerRevealed=true;
-  renderHands(false);
-  updateDeckDisplay();
-  function dealerTurn(){
-    if(handScore(dealerHand)<17){
-      dealerHand.push(drawCard());
-      renderHands(false);
-      updateDeckDisplay();
-      setTimeout(dealerTurn,600);
-    } else {
-      setTimeout(()=>resolveHand(handScore(playerHand),handScore(dealerHand)),200);
+  setTimeout(()=>{
+    dealerRevealed=true;
+    usedCards.push(dealerHand[1]);
+    renderHands(false);
+    updateDeckDisplay();
+    function dealerTurn(){
+      if(handScore(dealerHand)<17){
+        setTimeout(()=>{
+          dealerHand.push(drawCard());
+          renderHands(false);
+          updateDeckDisplay();
+          dealerTurn();
+        },900);
+      } else {
+        setTimeout(()=>resolveHand(handScore(playerHand),handScore(dealerHand)),400);
+      }
     }
-  }
-  setTimeout(dealerTurn,500);
+    setTimeout(dealerTurn,700);
+  },900);
 }
 function resolveHand(ps,ds){
   handOver=true;

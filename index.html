@@ -1,141 +1,707 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Distribución de Sueldos - Rango Ampliado</title>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        body { font-family: -apple-system, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; color: #2d3748; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); }
-        h2 { text-align: center; margin-bottom: 25px; color: #1a202c; }
-        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; background: #f1f5f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .control-group { display: flex; flex-direction: column; }
-        label { font-weight: 600; margin-bottom: 10px; color: #475569; }
-        input[type=range] { cursor: pointer; width: 100%; }
-        #chart-container { position: relative; width: 100%; height: 380px; }
-        
-        /* Estilo para los números del eje X (Fuente grande y clara) */
-        .tick text {
-            font-size: 17px !important; 
-            font-weight: 600;
-            fill: #334155;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probabilidad Condicional — Incendios Eléctricos</title>
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f8f7f4;
+    --accent: #2563eb;
+    --accent-soft: #dbeafe;
+    --green: #16a34a;
+    --green-soft: #dcfce7;
+    --orange: #ea580c;
+    --orange-soft: #ffedd5;
+    --border: #d1d5db;
+    --muted: #6b7280;
+    --card: #ffffff;
+    --shadow: 0 1px 4px rgba(0,0,0,0.08);
+    --radius: 10px;
+  }
 
-        .metrics { display: flex; justify-content: space-around; margin-top: 10px; padding-top: 25px; border-top: 1px solid #e2e8f0; text-align: center; }
-        .metric-title { font-size: 0.85em; font-weight: 600; color: #64748b; text-transform: uppercase; margin-bottom: 8px; }
-        .metric-value { font-size: 1.3em; font-weight: 700; color: #0f172a; }
-    </style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 40px;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--ink);
+    color: #fff;
+    padding: 18px 28px 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--accent);
+  }
+  .header-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    padding: 3px 9px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  header h1 { font-size: 1.15rem; font-weight: 600; line-height: 1.3; }
+  header p  { font-size: .78rem; color: #9ca3af; margin-top: 2px; }
+
+  /* ── Layout ── */
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 20px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Cards ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-header {
+    padding: 12px 16px;
+    background: var(--ink);
+    color: #fff;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-body { padding: 16px; }
+
+  /* ── Instructions ── */
+  .instructions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: .82rem;
+    color: var(--ink);
+    flex: 1;
+    min-width: 180px;
+  }
+  .step-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: .75rem;
+    flex-shrink: 0;
+  }
+  .step-num.blue  { background: var(--accent-soft); color: var(--accent); }
+  .step-num.green { background: var(--green-soft);  color: var(--green); }
+  .step-num.orange{ background: var(--orange-soft); color: var(--orange); }
+
+  /* ── Table ── */
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .82rem; }
+  th, td { padding: 7px 11px; border: 1px solid var(--border); text-align: center; }
+  thead tr:first-child th { background: #1e3a5f; color: #fff; font-weight: 700; }
+  thead tr:last-child th  { background: #2c4f7c; color: #e0e7ff; font-weight: 600; }
+  tbody tr:last-child td  { background: #f0f4ff; font-weight: 700; }
+  td.cause-cell { text-align: left; font-size: .78rem; color: var(--ink); }
+
+  /* Highlight states */
+  td.hl-condition, th.hl-condition { background: var(--accent-soft) !important; color: var(--accent) !important; font-weight: 700; }
+  td.hl-event,     th.hl-event     { background: var(--green-soft)  !important; color: var(--green)  !important; font-weight: 700; }
+  td.hl-intersect  { background: #bbf7d0 !important; color: #14532d !important; font-weight: 800; outline: 2px solid var(--green); }
+
+  /* Clickable headers / rows */
+  th.clickable, td.cause-cell {
+    cursor: pointer;
+    transition: background .15s;
+  }
+  th.clickable:hover { background: #bfdbfe; }
+  td.cause-cell:hover { background: #f0fdf4; }
+
+  th.selected-condition { background: var(--accent) !important; color: #fff !important; }
+  td.selected-event     { background: var(--green)  !important; color: #fff !important; font-weight: 800; }
+
+  /* ── Legend ── */
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; font-size: .76rem; }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+
+  /* ── Selection display ── */
+  .selection-display {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px;
+  }
+  .sel-badge {
+    display: flex; align-items: center; gap: 6px;
+    border-radius: 6px; padding: 6px 12px; font-size: .8rem; font-weight: 600;
+    border: 1.5px solid;
+  }
+  .sel-badge.cond  { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+  .sel-badge.event { background: var(--green-soft);  color: var(--green);  border-color: var(--green); }
+  .sel-badge.empty { background: #f3f4f6; color: var(--muted); border-color: var(--border); font-style: italic; }
+  .sel-badge .dot  { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-blue  { background: var(--accent); }
+  .dot-green { background: var(--green); }
+
+  /* ── Invert button ── */
+  .btn-invert {
+    background: var(--orange);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: .85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background .15s, transform .1s;
+    margin-top: 14px;
+    width: 100%;
+    justify-content: center;
+  }
+  .btn-invert:hover:not(:disabled) { background: #c2410c; transform: translateY(-1px); }
+  .btn-invert:disabled { background: #d1d5db; cursor: not-allowed; transform: none; }
+  .btn-invert svg { width: 16px; height: 16px; }
+
+  /* ── Formula display ── */
+  .formula-box {
+    background: #fef9ec;
+    border: 1.5px solid #fbbf24;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: .85rem;
+    line-height: 1.7;
+  }
+  .formula-box .f-main { font-size: 1.05rem; font-family: 'Courier New', monospace; font-weight: 700; }
+  .formula-box .f-result { font-size: 1.1rem; color: var(--green); font-weight: 800; }
+  .formula-box .f-blue  { color: var(--accent); font-weight: 700; }
+  .formula-box .f-green { color: var(--green);  font-weight: 700; }
+  .formula-empty { color: var(--muted); font-style: italic; text-align: center; padding: 20px; font-size: .85rem; }
+
+  /* ── Canvas / SVG panel ── */
+  #tree-panel {
+    min-height: 340px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  #tree-svg {
+    width: 100%;
+    height: 360px;
+  }
+  .tree-empty {
+    color: var(--muted);
+    font-size: .88rem;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .tree-empty span { font-size: 2.5rem; display: block; margin-bottom: 10px; opacity: .4; }
+
+  /* ── Result box ── */
+  .result-box {
+    background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-top: 14px;
+    display: none;
+  }
+  .result-box.show { display: block; }
+  .result-label { font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .result-value { font-size: 1.6rem; font-weight: 800; color: var(--accent); margin: 2px 0; }
+  .result-frac  { font-size: 1rem; color: var(--green); font-weight: 700; }
+  .result-desc  { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+</style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Distribución de Sueldos (Rango 0 - 1.6M)</h2>
-    
-    <div class="controls">
-        <div class="control-group">
-            <label id="label-mean">Media (x̄): $900.000</label>
-            <input type="range" id="mean" min="500000" max="1300000" step="10000" value="900000">
-        </div>
-        <div class="control-group">
-            <label id="label-std">Desviación Estándar (σ): $50.000</label>
-            <input type="range" id="std" min="0" max="250000" step="5000" value="50000">
-        </div>
-    </div>
+<header>
+  <div>
+    <div class="header-badge">EDU0301 · 3° Medio</div>
+    <h1>Explorador de Probabilidad Condicional</h1>
+    <p>Compañías de Bomberos — Incendios de Origen Eléctrico (2015)</p>
+  </div>
+</header>
 
-    <div id="chart-container"></div>
+<div class="instructions">
+  <div class="step">
+    <div class="step-num blue">1</div>
+    <span>Haz clic en una <strong>Compañía</strong> o <strong>Causa</strong> → será la <em>condición</em></span>
+  </div>
+  <div class="step">
+    <div class="step-num green">2</div>
+    <span>Haz clic en el otro tipo de variable → será el <em>evento de interés</em></span>
+  </div>
+  <div class="step">
+    <div class="step-num orange">3</div>
+    <span>Observa el árbol, la fórmula y experimenta con <strong>Invertir Condición</strong></span>
+  </div>
+</div>
 
-    <div class="metrics">
-        <div>
-            <div class="metric-title">Varianza (σ²)</div>
-            <div class="metric-value" id="var-val">2.500.000.000</div>
+<div class="layout">
+  <!-- LEFT: Table -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+        Tabla de Datos — Clic para seleccionar
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table id="main-table">
+            <thead>
+              <tr>
+                <th rowspan="2" style="text-align:left">Elementos involucrados</th>
+                <th class="clickable cb-header" data-cb="CB01">CB01</th>
+                <th class="clickable cb-header" data-cb="CB02">CB02</th>
+                <th class="clickable cb-header" data-cb="CB03">CB03</th>
+                <th class="clickable cb-header" data-cb="CB04">CB04</th>
+                <th>Total</th>
+              </tr>
+              <tr>
+                <th class="cb-sub" data-cb="CB01">Com. 1</th>
+                <th class="cb-sub" data-cb="CB02">Com. 2</th>
+                <th class="cb-sub" data-cb="CB03">Com. 3</th>
+                <th class="cb-sub" data-cb="CB04">Com. 4</th>
+                <th>General</th>
+              </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+          </table>
         </div>
-        <div>
-            <div class="metric-title">Coef. Variación (CV)</div>
-            <div class="metric-value" id="cv-val">5.56%</div>
+
+        <div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--accent-soft);border:1.5px solid var(--accent)"></div><span>Condición (espacio muestral reducido)</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0;border:1.5px solid var(--green)"></div><span>Intersección (evento ∩ condición)</span></div>
         </div>
+
+        <button class="btn-invert" id="btn-invert" disabled onclick="invertCondition()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4"/></svg>
+          Invertir Condición
+        </button>
+
+        <div class="formula-box" id="formula-box">
+          <div class="formula-empty">Selecciona una condición y un evento para ver la fórmula.</div>
+        </div>
+
+        <div class="result-box" id="result-box">
+          <div class="result-label">Probabilidad Condicional</div>
+          <div class="result-value" id="result-value">—</div>
+          <div class="result-frac"  id="result-frac">—</div>
+          <div class="result-desc"  id="result-desc">—</div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- RIGHT: Tree -->
+  <div>
+    <div class="card">
+      <div class="card-header">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/><path d="M12 7v4M12 11l-5 6M12 11l5 6"/></svg>
+        Diagrama de Árbol de Probabilidad Condicional
+      </div>
+      <div class="card-body" style="padding:8px">
+        <div id="tree-panel">
+          <div class="tree-empty" id="tree-placeholder">
+            <span>🌳</span>
+            Selecciona una compañía y una causa en la tabla para visualizar el árbol.
+          </div>
+          <svg id="tree-svg" style="display:none" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-    // Semilla para estabilidad visual
-    let currentSeed = 12345;
-    function seededRandom() {
-        currentSeed = (currentSeed * 9301 + 49297) % 233280;
-        return currentSeed / 233280;
+// ── Data ──────────────────────────────────────────────────────────────────
+const CAUSES = [
+  "Cable fijo o móvil",
+  "Dispositivos instalación eléctrica",
+  "Equipo electrónico / electrodoméstico",
+  "Falla eléctrica empalme",
+  "Iluminación",
+  "No determinado"
+];
+
+const DATA = {
+  //               CB01  CB02  CB03  CB04
+  "Cable fijo o móvil":                       [29, 19, 21, 78],
+  "Dispositivos instalación eléctrica":        [15,  5,  2,  9],
+  "Equipo electrónico / electrodoméstico":     [12, 30,  6,  9],
+  "Falla eléctrica empalme":                   [22, 11, 10,  5],
+  "Iluminación":                               [ 1,  9,  3,  0],
+  "No determinado":                            [ 0,  2,  0,  0]
+};
+
+const CBS = ["CB01","CB02","CB03","CB04"];
+const TOTAL_GENERAL = 298;
+
+// Pre-compute totals
+const causeTotals = {};
+CAUSES.forEach(c => { causeTotals[c] = DATA[c].reduce((a,b)=>a+b,0); });
+const cbTotals = [79, 76, 42, 101]; // CB01..CB04
+
+// ── State ─────────────────────────────────────────────────────────────────
+let selCondType = null; // 'cb' | 'cause'
+let selCondVal  = null; // e.g. 'CB04' | 'Cable fijo o móvil'
+let selEvtType  = null;
+let selEvtVal   = null;
+
+// ── Build table ───────────────────────────────────────────────────────────
+function buildTable() {
+  const tbody = document.getElementById('table-body');
+  tbody.innerHTML = '';
+  CAUSES.forEach(cause => {
+    const tr = document.createElement('tr');
+    const tdCause = document.createElement('td');
+    tdCause.className = 'cause-cell';
+    tdCause.textContent = cause;
+    tdCause.dataset.cause = cause;
+    tdCause.title = 'Clic para seleccionar esta causa';
+    tdCause.onclick = () => selectItem('cause', cause);
+    tr.appendChild(tdCause);
+    CBS.forEach((cb, i) => {
+      const td = document.createElement('td');
+      td.textContent = DATA[cause][i];
+      td.dataset.cause = cause;
+      td.dataset.cb    = cb;
+      tr.appendChild(td);
+    });
+    const tdTotal = document.createElement('td');
+    tdTotal.textContent = causeTotals[cause];
+    tr.appendChild(tdTotal);
+    tbody.appendChild(tr);
+  });
+
+  // Totals row
+  const trTot = document.createElement('tr');
+  const tdTotLabel = document.createElement('td');
+  tdTotLabel.className = 'cause-cell';
+  tdTotLabel.textContent = 'Total General';
+  tdTotLabel.style.fontWeight = '700';
+  trTot.appendChild(tdTotLabel);
+  cbTotals.forEach(t => {
+    const td = document.createElement('td');
+    td.textContent = t; td.style.fontWeight='700';
+    trTot.appendChild(td);
+  });
+  const tdGrand = document.createElement('td');
+  tdGrand.textContent = TOTAL_GENERAL; tdGrand.style.fontWeight='800';
+  trTot.appendChild(tdGrand);
+  tbody.appendChild(trTot);
+}
+
+// ── Selection logic ───────────────────────────────────────────────────────
+function selectItem(type, val) {
+  if (!selCondType) {
+    // First selection → condition
+    selCondType = type; selCondVal = val;
+  } else if (selCondType === type && selCondVal === val) {
+    // Deselect same
+    selCondType = null; selCondVal = null;
+    selEvtType  = null; selEvtVal  = null;
+  } else if (selCondType === type) {
+    // Same type → replace condition, clear event
+    selCondType = type; selCondVal = val;
+    selEvtType  = null; selEvtVal  = null;
+  } else {
+    // Different type → event of interest
+    selEvtType = type; selEvtVal = val;
+  }
+  applyHighlights();
+  updateFormula();
+  drawTree();
+}
+
+function applyHighlights() {
+  // Clear all
+  document.querySelectorAll('th,td').forEach(el => {
+    el.classList.remove('hl-condition','hl-event','hl-intersect','selected-condition','selected-event');
+  });
+
+  // Highlight condition
+  if (selCondType === 'cb' && selCondVal) {
+    const idx = CBS.indexOf(selCondVal);
+    document.querySelectorAll(`th.cb-header[data-cb="${selCondVal}"], th.cb-sub[data-cb="${selCondVal}"]`).forEach(th => {
+      th.classList.add('hl-condition','selected-condition');
+    });
+    document.querySelectorAll(`td[data-cb="${selCondVal}"]`).forEach(td => td.classList.add('hl-condition'));
+  }
+  if (selCondType === 'cause' && selCondVal) {
+    document.querySelectorAll(`td.cause-cell[data-cause="${selCondVal}"]`).forEach(td => {
+      td.classList.add('hl-condition','selected-condition');
+    });
+    document.querySelectorAll(`td[data-cause="${selCondVal}"]:not(.cause-cell)`).forEach(td => td.classList.add('hl-condition'));
+  }
+
+  // Highlight event & intersection
+  if (selEvtType === 'cb' && selEvtVal) {
+    document.querySelectorAll(`th.cb-header[data-cb="${selEvtVal}"], th.cb-sub[data-cb="${selEvtVal}"]`).forEach(th => {
+      th.classList.add('hl-event','selected-event');
+    });
+    document.querySelectorAll(`td[data-cb="${selEvtVal}"]`).forEach(td => td.classList.add('hl-event'));
+  }
+  if (selEvtType === 'cause' && selEvtVal) {
+    document.querySelectorAll(`td.cause-cell[data-cause="${selEvtVal}"]`).forEach(td => {
+      td.classList.add('hl-event','selected-event');
+    });
+    document.querySelectorAll(`td[data-cause="${selEvtVal}"]:not(.cause-cell)`).forEach(td => td.classList.add('hl-event'));
+  }
+
+  // Intersection
+  if (selCondVal && selEvtVal) {
+    if (selCondType === 'cb' && selEvtType === 'cause') {
+      const td = document.querySelector(`td[data-cb="${selCondVal}"][data-cause="${selEvtVal}"]`);
+      if (td) td.classList.add('hl-intersect');
+    } else if (selCondType === 'cause' && selEvtType === 'cb') {
+      const td = document.querySelector(`td[data-cb="${selEvtVal}"][data-cause="${selCondVal}"]`);
+      if (td) td.classList.add('hl-intersect');
     }
+  }
 
-    const numTrabajadores = 50;
-    const zScores = [];
-    for (let i = 0; i < numTrabajadores; i++) {
-        let u = 0, v = 0;
-        while (u === 0) u = seededRandom();
-        while (v === 0) v = seededRandom();
-        let z = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-        zScores.push(z);
-    }
+  // Invert button
+  document.getElementById('btn-invert').disabled = !(selCondVal && selEvtVal);
+}
 
-    const width = document.getElementById('chart-container').clientWidth;
-    const height = 380;
-    const margin = { top: 20, right: 40, bottom: 60, left: 60 };
-    const innerHeight = height - margin.top - margin.bottom;
-    const centerY = innerHeight / 2 + margin.top;
+// ── Get intersection value ────────────────────────────────────────────────
+function getIntersection(cbVal, causeVal) {
+  const idx = CBS.indexOf(cbVal);
+  return DATA[causeVal][idx];
+}
+function getCondTotal(type, val) {
+  if (type === 'cb') return cbTotals[CBS.indexOf(val)];
+  return causeTotals[val];
+}
 
-    const svg = d3.select("#chart-container").append("svg").attr("width", width).attr("height", height);
-    
-    // CAMBIO CLAVE: Nueva escala de 0 a 1.600.000
-    const xScale = d3.scaleLinear().domain([0, 1600000]).range([margin.left, width - margin.right]);
+// ── Formula & result ──────────────────────────────────────────────────────
+function updateFormula() {
+  const box = document.getElementById('formula-box');
+  const resBox = document.getElementById('result-box');
 
-    const xAxisGenerator = d3.axisBottom(xScale)
-        .ticks(8)
-        .tickFormat(d => "$" + d.toLocaleString('es-CL'));
+  if (!selCondVal || !selEvtVal) {
+    box.innerHTML = `<div class="formula-empty">Selecciona una condición y un evento para ver la fórmula.</div>`;
+    resBox.classList.remove('show');
+    return;
+  }
 
-    svg.append("g")
-        .attr("transform", `translate(0, ${height - margin.bottom})`)
-        .attr("class", "x-axis")
-        .call(xAxisGenerator);
+  const cbV    = selCondType === 'cb'    ? selCondVal : selEvtVal;
+  const causeV = selCondType === 'cause' ? selCondVal : selEvtVal;
+  const inter  = getIntersection(cbV, causeV);
+  const condTotal = getCondTotal(selCondType, selCondVal);
+  const pct = ((inter / condTotal) * 100).toFixed(1);
+  const condLabel = selCondType === 'cb' ? selCondVal : `"${selCondVal}"`;
+  const evtLabel  = selEvtType  === 'cb' ? selEvtVal  : `"${selEvtVal}"`;
 
-    const meanLine = svg.append("line")
-        .attr("y1", margin.top).attr("y2", height - margin.bottom)
-        .attr("stroke", "#ef4444").attr("stroke-width", 3).attr("stroke-dasharray", "5,5");
+  box.innerHTML = `
+    <div style="margin-bottom:6px;font-size:.78rem;color:var(--muted);font-weight:600">FÓRMULA APLICADA:</div>
+    <div class="f-main">
+      P(<span class="f-green">E</span> | <span class="f-blue">C</span>) = 
+      P(<span class="f-green">E</span> ∩ <span class="f-blue">C</span>) / P(<span class="f-blue">C</span>)
+    </div>
+    <div style="margin:8px 0 4px;font-size:.78rem;color:var(--muted)">Sustituyendo:</div>
+    <div class="f-main">
+      P(${evtLabel} | ${condLabel}) = 
+      <span class="f-green">${inter}</span> / <span class="f-blue">${condTotal}</span>
+      = <span class="f-result">${pct}%</span>
+    </div>
+    <div style="margin-top:8px;font-size:.75rem;color:var(--muted)">
+      <strong style="color:var(--accent)">Condición (denominador):</strong> ${condLabel} → ${condTotal} incendios<br>
+      <strong style="color:var(--green)">Numerador (intersección):</strong> ${inter} incendios cumplen ambas condiciones
+    </div>
+  `;
 
-    const nodes = zScores.map((z, id) => ({ id, z, x: width/2, y: centerY }));
-    const circles = svg.selectAll("circle").data(nodes).enter().append("circle")
-        .attr("r", 7.5).attr("fill", "#6366f1").attr("opacity", 0.85).attr("stroke", "#fff").attr("stroke-width", 1.2);
+  document.getElementById('result-value').textContent = pct + '%';
+  document.getElementById('result-frac').textContent  = `${inter} / ${condTotal}`;
+  document.getElementById('result-desc').textContent  =
+    `Probabilidad de ${evtLabel} dado que ocurrió la condición ${condLabel}`;
+  resBox.classList.add('show');
+}
 
-    function update() {
-        const mean = parseFloat(document.getElementById('mean').value);
-        const std = parseFloat(document.getElementById('std').value);
+// ── Invert ────────────────────────────────────────────────────────────────
+function invertCondition() {
+  [selCondType, selEvtType] = [selEvtType, selCondType];
+  [selCondVal,  selEvtVal ] = [selEvtVal,  selCondVal ];
+  applyHighlights();
+  updateFormula();
+  drawTree();
+}
 
-        document.getElementById('label-mean').innerText = `Media (x̄): $${mean.toLocaleString('es-CL')}`;
-        document.getElementById('label-std').innerText = `Desviación Estándar (σ): $${std.toLocaleString('es-CL')}`;
-        
-        const variance = Math.pow(std, 2);
-        const cv = mean !== 0 ? (std / mean) * 100 : 0;
-        document.getElementById('var-val').innerText = variance.toLocaleString('es-CL');
-        document.getElementById('cv-val').innerText = cv.toFixed(2) + "%";
+// ── Draw tree (SVG) ───────────────────────────────────────────────────────
+function drawTree() {
+  const svg = document.getElementById('tree-svg');
+  const ph  = document.getElementById('tree-placeholder');
 
-        meanLine.transition().duration(100).attr("x1", xScale(mean)).attr("x2", xScale(mean));
+  if (!selCondVal || !selEvtVal) {
+    svg.style.display = 'none';
+    ph.style.display  = 'block';
+    return;
+  }
 
-        nodes.forEach(node => {
-            node.targetX = xScale(mean + node.z * std);
-        });
+  ph.style.display  = 'none';
+  svg.style.display = 'block';
+  svg.innerHTML = '';
 
-        const simulation = d3.forceSimulation(nodes)
-            .force("x", d3.forceX(d => d.targetX).strength(1))
-            .force("y", d3.forceY(centerY).strength(0.12))
-            .force("collide", d3.forceCollide(8.5)) 
-            .stop();
+  const W = svg.clientWidth || 540;
+  const H = 360;
+  svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
 
-        for (let i = 0; i < 80; i++) simulation.tick();
+  const cbV    = selCondType === 'cb'    ? selCondVal : selEvtVal;
+  const causeV = selCondType === 'cause' ? selCondVal : selEvtVal;
+  const condLabel = selCondType === 'cb' ? selCondVal : shorten(selCondVal);
+  const evtLabel  = selEvtType  === 'cb' ? selEvtVal  : shorten(selEvtVal);
+  const condTotal = getCondTotal(selCondType, selCondVal);
+  const condComp  = TOTAL_GENERAL - condTotal;
+  const inter     = getIntersection(cbV, causeV);
+  const nonInter  = condTotal - inter;
 
-        circles.transition().duration(120)
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y);
-    }
+  // Coordinates
+  const rootX = 60, rootY = H/2;
+  const mid1Y_top = H * 0.25, mid1Y_bot = H * 0.75;
+  const mid1X = W * 0.42;
+  const leaf1Y = H * 0.15, leaf2Y = H * 0.38;
+  const leaf3Y = H * 0.62, leaf4Y = H * 0.85;
+  const leafX  = W * 0.72;
+  const labelX = W * 0.74;
 
-    document.getElementById('mean').addEventListener('input', update);
-    document.getElementById('std').addEventListener('input', update);
-    update();
+  function line(x1,y1,x2,y2,col,dash) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','line');
+    el.setAttribute('x1',x1); el.setAttribute('y1',y1);
+    el.setAttribute('x2',x2); el.setAttribute('y2',y2);
+    el.setAttribute('stroke',col||'#94a3b8');
+    el.setAttribute('stroke-width','2');
+    if(dash) el.setAttribute('stroke-dasharray','5,4');
+    svg.appendChild(el); return el;
+  }
+  function circle(cx,cy,r,fill,stroke) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',r);
+    el.setAttribute('fill',fill||'#fff');
+    el.setAttribute('stroke',stroke||'#94a3b8');
+    el.setAttribute('stroke-width','2');
+    svg.appendChild(el);
+  }
+  function text(x,y,str,col,fw,fs,anchor) {
+    const el = document.createElementNS('http://www.w3.org/2000/svg','text');
+    el.setAttribute('x',x); el.setAttribute('y',y);
+    el.setAttribute('fill',col||'#1a1a2e');
+    el.setAttribute('font-size',fs||'11');
+    el.setAttribute('font-weight',fw||'400');
+    el.setAttribute('text-anchor',anchor||'middle');
+    el.setAttribute('font-family','Segoe UI,system-ui,sans-serif');
+    el.textContent = str;
+    svg.appendChild(el);
+  }
+  function labelOnLine(x1,y1,x2,y2,txt,col) {
+    const mx = (x1+x2)/2 - 8, my = (y1+y2)/2 - 5;
+    text(mx, my, txt, col||'#1a1a2e','700','10.5','end');
+  }
+
+  const BLUE  = '#2563eb', BSOFT = '#bfdbfe';
+  const GREEN = '#16a34a', GSOFT = '#bbf7d0';
+  const GRAY  = '#9ca3af', GRAYDK = '#6b7280';
+  const ORANGE= '#ea580c';
+
+  // Root node
+  circle(rootX, rootY, 10, '#1e3a5f', '#1e3a5f');
+  text(rootX, rootY-16, 'Inicio', '#1e3a5f','700','10.5');
+
+  // ── Branch 1: Condition ──
+  line(rootX, rootY, mid1X, mid1Y_top, BLUE);
+  labelOnLine(rootX,rootY, mid1X,mid1Y_top, `${condTotal}/${TOTAL_GENERAL}`, BLUE);
+  circle(mid1X, mid1Y_top, 9, BSOFT, BLUE);
+  text(mid1X, mid1Y_top - 15, condLabel, BLUE,'700','11');
+
+  // Leaf 1: Intersection
+  line(mid1X, mid1Y_top, leafX, leaf1Y, GREEN);
+  labelOnLine(mid1X,mid1Y_top, leafX,leaf1Y, `${inter}/${condTotal}`, GREEN);
+  circle(leafX, leaf1Y, 8, GSOFT, GREEN);
+  // Leaf label
+  text(labelX+14, leaf1Y-14, condLabel, BLUE,'700','9.5','start');
+  text(labelX+14, leaf1Y,    '∩ '+evtLabel, GREEN,'700','9.5','start');
+  text(labelX+14, leaf1Y+12, `→ ${inter}/${TOTAL_GENERAL}`, GRAYDK,'600','9','start');
+
+  // Leaf 2: Complement of event given condition
+  line(mid1X, mid1Y_top, leafX, leaf2Y, GRAY, true);
+  labelOnLine(mid1X,mid1Y_top, leafX,leaf2Y, `${nonInter}/${condTotal}`, GRAYDK);
+  circle(leafX, leaf2Y, 8, '#f3f4f6', GRAY);
+  text(labelX+14, leaf2Y-8, condLabel, BLUE,'600','9.5','start');
+  text(labelX+14, leaf2Y+6, '∩ no '+evtLabel, GRAYDK,'500','9','start');
+
+  // ── Branch 2: Complement of condition ──
+  line(rootX, rootY, mid1X, mid1Y_bot, GRAY, true);
+  labelOnLine(rootX,rootY, mid1X,mid1Y_bot, `${condComp}/${TOTAL_GENERAL}`, GRAYDK);
+  circle(mid1X, mid1Y_bot, 9, '#f3f4f6', GRAY);
+  text(mid1X, mid1Y_bot+20, `no ${condLabel}`, GRAYDK,'600','10.5');
+
+  // Leaf 3, 4 (simplified, no data for complement of condition vs cause)
+  line(mid1X, mid1Y_bot, leafX, leaf3Y, GRAY, true);
+  circle(leafX, leaf3Y, 8, '#f3f4f6', GRAY);
+  text(labelX+14, leaf3Y+4, `no ${condLabel} ∩ ${evtLabel}`, GRAYDK,'500','9','start');
+
+  line(mid1X, mid1Y_bot, leafX, leaf4Y, GRAY, true);
+  circle(leafX, leaf4Y, 8, '#f3f4f6', GRAY);
+  text(labelX+14, leaf4Y+4, `no ${condLabel} ∩ no ${evtLabel}`, GRAYDK,'500','9','start');
+
+  // ── Highlighted result box in svg ──
+  const rx = W*0.03, ry = H-52, rw = 260, rh = 44;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+  rect.setAttribute('x',rx); rect.setAttribute('y',ry);
+  rect.setAttribute('width',rw); rect.setAttribute('height',rh);
+  rect.setAttribute('rx','7');
+  rect.setAttribute('fill','#eff6ff');
+  rect.setAttribute('stroke',BLUE); rect.setAttribute('stroke-width','1.5');
+  svg.appendChild(rect);
+  const pct = ((inter/condTotal)*100).toFixed(1);
+  text(rx+8, ry+15, `P(${evtLabel} | ${condLabel})`, BLUE,'700','11','start');
+  text(rx+8, ry+32, `= ${inter}/${condTotal} ≈ ${pct}%`, GREEN,'800','12.5','start');
+}
+
+function shorten(s) {
+  return s.length > 18 ? s.substring(0,16)+'…' : s;
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+buildTable();
+
+// Wire CB header clicks
+document.querySelectorAll('th.cb-header').forEach(th => {
+  th.onclick = () => selectItem('cb', th.dataset.cb);
+});
+
+// Resize → redraw
+window.addEventListener('resize', () => { if(selCondVal && selEvtVal) drawTree(); });
 </script>
 </body>
 </html>

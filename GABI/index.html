@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulador de Ruleta — Probabilidades</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F0F4FA;
+    --surface: #FFFFFF;
+    --border: #DDE3EE;
+    --text: #1A2035;
+    --muted: #6B7594;
+    --accent: #3A5CCC;
+    --accent-light: #EEF2FF;
+    --accent-hover: #2D48A8;
+    --success: #17A858;
+    --radius: 16px;
+    --shadow: 0 2px 12px rgba(30,45,100,0.09);
+    --shadow-lg: 0 8px 32px rgba(30,45,100,0.13);
+  }
+
+  body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 16px 48px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  header .label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-light);
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin-bottom: 10px;
+  }
+
+  header h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  header p {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 6px;
+  }
+
+  /* Step indicator */
+  .steps {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 28px;
+  }
+
+  .step-dot {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: color 0.3s;
+  }
+
+  .step-dot .num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700;
+    transition: background 0.3s, color 0.3s;
+    flex-shrink: 0;
+  }
+
+  .step-dot.active .num { background: var(--accent); color: #fff; }
+  .step-dot.active { color: var(--accent); }
+  .step-dot.done .num { background: var(--success); color: #fff; }
+  .step-dot.done { color: var(--success); }
+
+  .step-line {
+    width: 36px; height: 2px;
+    background: var(--border);
+    margin: 0 4px;
+    transition: background 0.3s;
+  }
+  .step-line.done { background: var(--success); }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+    width: 100%;
+    max-width: 560px;
+    display: none;
+    animation: fadeUp 0.35s ease;
+  }
+  .card.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .card .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  /* Number selector */
+  .num-selector {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .num-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: var(--surface);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text);
+    font-weight: 700;
+    transition: border-color 0.2s, background 0.2s;
+    flex-shrink: 0;
+  }
+  .num-btn:hover { border-color: var(--accent); background: var(--accent-light); }
+
+  .num-display {
+    flex: 1;
+    text-align: center;
+  }
+
+  .num-display .big {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .num-display .caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Hint dots */
+  .hint-dots {
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    margin-bottom: 28px;
+  }
+  .hint-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+  .hint-dot.on { background: var(--accent); }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background 0.2s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    width: 100%;
+  }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 2px solid var(--accent);
+  }
+  .btn-outline:hover { background: var(--accent-light); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--muted);
+    border: 2px solid var(--border);
+  }
+  .btn-ghost:hover { background: var(--bg); }
+
+  /* Color sections list */
+  .sections-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 24px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+
+  .section-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+  }
+
+  .section-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 72px;
+  }
+
+  .color-picker-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .color-swatch {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.15s, border-color 0.15s;
+    outline: none;
+  }
+  .color-swatch:hover { transform: scale(1.2); }
+  .color-swatch.selected { border-color: var(--text); transform: scale(1.15); }
+
+  .color-name-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    min-width: 60px;
+    text-align: right;
+  }
+
+  /* Spinner area */
+  #step3-card {
+    max-width: 720px;
+  }
+
+  .spinner-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 580px) {
+    .spinner-layout { grid-template-columns: 1fr; }
+  }
+
+  .canvas-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #rouletteCanvas {
+    border-radius: 50%;
+    box-shadow: var(--shadow-lg);
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .needle {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 24px solid #1A2035;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+    z-index: 10;
+  }
+
+  .side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .legend {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .legend-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  .legend-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  /* Results table */
+  .results-section {
+    margin-top: 28px;
+  }
+
+  .results-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 100px;
+    background: var(--accent-light);
+    color: var(--accent);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+
+  thead tr {
+    background: var(--bg);
+  }
+
+  th {
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .td-color {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+
+  .td-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .freq-bar-wrap {
+    background: var(--bg);
+    border-radius: 4px;
+    height: 8px;
+    flex: 1;
+    min-width: 40px;
+    overflow: hidden;
+  }
+
+  .freq-bar {
+    height: 100%;
+    border-radius: 4px;
+    background: var(--accent);
+    transition: width 0.5s ease;
+  }
+
+  .td-freq {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .btn-row .btn { flex: 1; min-width: 120px; }
+
+  /* Spinning animation */
+  .spinning {
+    animation: spin 1.8s cubic-bezier(0.17, 0.67, 0.12, 1.0) forwards;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(var(--spin-deg)); }
+  }
+
+  /* Total giros */
+  .giros-counter {
+    text-align: center;
+    padding: 10px;
+    background: var(--accent-light);
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  /* Scrollbar */
+  .sections-list::-webkit-scrollbar { width: 5px; }
+  .sections-list::-webkit-scrollbar-track { background: var(--bg); border-radius: 10px; }
+  .sections-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="label">7° Básico · Matemáticas</div>
+  <h1>Simulador de Ruleta</h1>
+  <p>Experimenta con probabilidades de forma visual y matemática.</p>
+</header>
+
+<!-- Step indicator -->
+<div class="steps" id="stepIndicator">
+  <div class="step-dot active" id="sd1"><span class="num">1</span><span>Secciones</span></div>
+  <div class="step-line" id="sl1"></div>
+  <div class="step-dot" id="sd2"><span class="num">2</span><span>Colores</span></div>
+  <div class="step-line" id="sl2"></div>
+  <div class="step-dot" id="sd3"><span class="num">3</span><span>Simulación</span></div>
+</div>
+
+<!-- STEP 1 -->
+<div class="card active" id="step1-card">
+  <h2>¿Cuántas secciones tendrá la ruleta?</h2>
+  <p class="subtitle">Elige entre 2 y 8 divisiones.</p>
+
+  <div class="num-selector">
+    <button class="num-btn" id="decBtn" onclick="changeN(-1)">−</button>
+    <div class="num-display">
+      <div class="big" id="numDisplay">4</div>
+      <div class="caption">secciones</div>
+    </div>
+    <button class="num-btn" id="incBtn" onclick="changeN(1)">+</button>
+  </div>
+
+  <div class="hint-dots" id="hintDots"></div>
+
+  <button class="btn btn-primary" onclick="goStep2()">Siguiente →</button>
+</div>
+
+<!-- STEP 2 -->
+<div class="card" id="step2-card">
+  <h2>Asigna un color a cada sección</h2>
+  <p class="subtitle">Selecciona un color para cada división de la ruleta.</p>
+
+  <div class="sections-list" id="sectionsList"></div>
+
+  <div style="display:flex;gap:10px;">
+    <button class="btn btn-ghost" onclick="goStep1()" style="flex:0 0 auto;padding:12px 18px;">← Volver</button>
+    <button class="btn btn-primary" id="genBtn" onclick="goStep3()">Generar Ruleta</button>
+  </div>
+</div>
+
+<!-- STEP 3 -->
+<div class="card" id="step3-card">
+  <h2>Ruleta lista</h2>
+  <p class="subtitle">Presiona el botón para girar 10 veces y observa los resultados.</p>
+
+  <div class="spinner-layout">
+    <div class="canvas-wrap">
+      <div class="needle"></div>
+      <canvas id="rouletteCanvas" width="280" height="280"></canvas>
+    </div>
+
+    <div class="side-panel">
+      <div class="legend">
+        <div class="legend-title">Secciones</div>
+        <div class="legend-items" id="legendItems"></div>
+      </div>
+
+      <div class="giros-counter" id="girosCounter">Total de giros: 0 / 100</div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="spinBtn" onclick="spinWheel()">Girar 10 veces</button>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="resetAll()" style="font-size:13px;padding:10px;">↩ Nueva Ruleta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-section" id="resultsSection" style="display:none;">
+    <div class="results-title">
+      Tabla de Resultados
+      <span class="badge" id="totalBadge">0 giros</span>
+    </div>
+    <table id="resultsTable">
+      <thead>
+        <tr>
+          <th>Color</th>
+          <th>Frec. Absoluta</th>
+          <th style="min-width:80px;"></th>
+        </tr>
+      </thead>
+      <tbody id="resultsBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ── Data ──────────────────────────────────────────────────────────────────────
+const COLORS = [
+  { name: 'Rojo',     hex: '#E53E3E' },
+  { name: 'Azul',     hex: '#3182CE' },
+  { name: 'Verde',    hex: '#38A169' },
+  { name: 'Amarillo', hex: '#D69E2E' },
+  { name: 'Naranja',  hex: '#DD6B20' },
+  { name: 'Morado',   hex: '#805AD5' },
+  { name: 'Rosa',     hex: '#D53F8C' },
+  { name: 'Celeste',  hex: '#0BC5EA' },
+];
+
+let numSections = 4;
+let selectedColors = [];   // array of color indices
+let frequencies  = [];     // cumulative frequencies
+let totalSpins   = 0;
+let currentAngle = 0;      // canvas rotation angle in degrees
+let isSpinning   = false;
+
+// ── Step 1 ────────────────────────────────────────────────────────────────────
+function buildHintDots() {
+  const c = document.getElementById('hintDots');
+  c.innerHTML = '';
+  for (let i = 2; i <= 8; i++) {
+    const d = document.createElement('div');
+    d.className = 'hint-dot' + (i <= numSections ? ' on' : '');
+    c.appendChild(d);
+  }
+}
+
+function changeN(delta) {
+  numSections = Math.min(8, Math.max(2, numSections + delta));
+  document.getElementById('numDisplay').textContent = numSections;
+  document.getElementById('decBtn').disabled = numSections === 2;
+  document.getElementById('incBtn').disabled = numSections === 8;
+  buildHintDots();
+}
+
+buildHintDots();
+
+function goStep1() {
+  setStep(1);
+}
+
+function goStep2() {
+  buildColorPickers();
+  setStep(2);
+}
+
+// ── Step 2 ────────────────────────────────────────────────────────────────────
+function buildColorPickers() {
+  const list = document.getElementById('sectionsList');
+  list.innerHTML = '';
+  // Default: cycle through colors
+  selectedColors = Array.from({ length: numSections }, (_, i) => i % COLORS.length);
+
+  for (let i = 0; i < numSections; i++) {
+    const row = document.createElement('div');
+    row.className = 'section-row';
+
+    const lbl = document.createElement('div');
+    lbl.className = 'section-label';
+    lbl.textContent = `Sección ${i + 1}`;
+
+    const pickerRow = document.createElement('div');
+    pickerRow.className = 'color-picker-row';
+
+    COLORS.forEach((c, ci) => {
+      const sw = document.createElement('button');
+      sw.className = 'color-swatch' + (ci === selectedColors[i] ? ' selected' : '');
+      sw.style.background = c.hex;
+      sw.title = c.name;
+      sw.setAttribute('aria-label', c.name);
+      sw.onclick = () => selectColor(i, ci);
+      sw.id = `sw-${i}-${ci}`;
+      pickerRow.appendChild(sw);
+    });
+
+    const nameTag = document.createElement('div');
+    nameTag.className = 'color-name-tag';
+    nameTag.id = `ctag-${i}`;
+    nameTag.textContent = COLORS[selectedColors[i]].name;
+
+    row.appendChild(lbl);
+    row.appendChild(pickerRow);
+    row.appendChild(nameTag);
+    list.appendChild(row);
+  }
+}
+
+function selectColor(secIdx, colorIdx) {
+  // Deselect old
+  const old = document.getElementById(`sw-${secIdx}-${selectedColors[secIdx]}`);
+  if (old) old.classList.remove('selected');
+  // Select new
+  selectedColors[secIdx] = colorIdx;
+  const sw = document.getElementById(`sw-${secIdx}-${colorIdx}`);
+  if (sw) sw.classList.add('selected');
+  document.getElementById(`ctag-${secIdx}`).textContent = COLORS[colorIdx].name;
+}
+
+// ── Step 3 ────────────────────────────────────────────────────────────────────
+function goStep3() {
+  frequencies = new Array(numSections).fill(0);
+  totalSpins  = 0;
+  currentAngle = 0;
+  isSpinning   = false;
+  document.getElementById('resultsSection').style.display = 'none';
+  updateGirosCounter();
+  updateSpinBtn();
+  buildLegend();
+  drawWheel(0);
+  setStep(3);
+}
+
+function buildLegend() {
+  const leg = document.getElementById('legendItems');
+  leg.innerHTML = '';
+  const counts = {};
+  selectedColors.forEach(ci => {
+    counts[ci] = (counts[ci] || 0) + 1;
+  });
+  Object.entries(counts).forEach(([ci, cnt]) => {
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.innerHTML = `<div class="legend-dot" style="background:${COLORS[ci].hex}"></div>
+      <span>${COLORS[ci].name}</span>
+      <span style="margin-left:auto;color:var(--muted);font-size:12px;">${cnt} sec.</span>`;
+    leg.appendChild(item);
+  });
+}
+
+// ── Canvas ────────────────────────────────────────────────────────────────────
+function drawWheel(rotationDeg) {
+  const canvas = document.getElementById('rouletteCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2, r = W / 2 - 4;
+
+  ctx.clearRect(0, 0, W, H);
+
+  const sliceAngle = (2 * Math.PI) / numSections;
+  const startOffset = (rotationDeg * Math.PI) / 180 - Math.PI / 2;
+
+  selectedColors.forEach((ci, i) => {
+    const start = startOffset + i * sliceAngle;
+    const end   = start + sliceAngle;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = COLORS[ci].hex;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+
+  // Section numbers
+  ctx.save();
+  selectedColors.forEach((ci, i) => {
+    const midAngle = startOffset + i * sliceAngle + sliceAngle / 2;
+    const tx = cx + (r * 0.65) * Math.cos(midAngle);
+    const ty = cy + (r * 0.65) * Math.sin(midAngle);
+    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.font = 'bold 13px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(i + 1, tx, ty);
+  });
+  ctx.restore();
+
+  // Center circle
+  ctx.beginPath();
+  ctx.arc(cx, cy, 14, 0, 2 * Math.PI);
+  ctx.fillStyle = '#fff';
+  ctx.fill();
+  ctx.strokeStyle = '#DDE3EE';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+}
+
+// ── Spin logic ────────────────────────────────────────────────────────────────
+function getWinnerFromAngle(finalAngle) {
+  // The needle points up (top center). Determine which section is at the top.
+  // Section i occupies [i*slice, (i+1)*slice) measured from start offset.
+  // We track currentAngle as the total rotation of the wheel.
+  const sliceAngle = 360 / numSections;
+  // Needle at top = 0°. Wheel rotated by currentAngle. Section 0 starts at 0°.
+  // Position of needle on wheel = (-currentAngle) mod 360
+  const pointerAngle = (((-finalAngle) % 360) + 360) % 360;
+  return Math.floor(pointerAngle / sliceAngle) % numSections;
+}
+
+async function spinWheel() {
+  if (isSpinning) return;
+  if (totalSpins >= 100) return;
+
+  isSpinning = true;
+  document.getElementById('spinBtn').disabled = true;
+
+  const canvas = document.getElementById('rouletteCanvas');
+  const spinsPerBatch = Math.min(10, 100 - totalSpins);
+  const spinsToRun = spinsPerBatch;
+  const results = [];
+
+  // Compute batch results first
+  for (let s = 0; s < spinsToRun; s++) {
+    const winner = Math.floor(Math.random() * numSections);
+    results.push(winner);
+  }
+
+  // Animate a single spin
+  const extraDeg = 1440 + Math.random() * 720; // 4-6 full rotations
+  // Land on last result
+  const lastWinner = results[results.length - 1];
+  const sliceAngle = 360 / numSections;
+  // Determine angle so that lastWinner is under the needle
+  // Needle at top: pointer angle = (-finalAngle) mod 360 should be in [lastWinner*slice, (lastWinner+1)*slice)
+  const targetPointer = lastWinner * sliceAngle + sliceAngle / 2;
+  const targetRotation = ((-targetPointer) % 360 + 360) % 360;
+  const currentMod = currentAngle % 360;
+  let delta = targetRotation - currentMod;
+  if (delta < 0) delta += 360;
+  const finalAngle = currentAngle + extraDeg - (extraDeg % 360) + delta;
+
+  await animateSpin(currentAngle, finalAngle, 2000);
+  currentAngle = finalAngle;
+
+  // Apply frequencies
+  results.forEach(winner => {
+    frequencies[winner]++;
+    totalSpins++;
+  });
+
+  updateTable();
+  updateGirosCounter();
+  updateSpinBtn();
+  isSpinning = false;
+}
+
+function animateSpin(from, to, duration) {
+  return new Promise(resolve => {
+    const start = performance.now();
+    function frame(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const angle = from + (to - from) * eased;
+      drawWheel(angle);
+      if (progress < 1) {
+        requestAnimationFrame(frame);
+      } else {
+        drawWheel(to);
+        resolve();
+      }
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+function updateGirosCounter() {
+  document.getElementById('girosCounter').textContent =
+    `Total de giros: ${totalSpins} / 100`;
+}
+
+function updateSpinBtn() {
+  const btn = document.getElementById('spinBtn');
+  if (totalSpins >= 100) {
+    btn.disabled = true;
+    btn.textContent = 'Límite alcanzado (100 giros)';
+  } else {
+    btn.disabled = false;
+    const remaining = Math.min(10, 100 - totalSpins);
+    btn.textContent = `Girar ${remaining} ${remaining === 1 ? 'vez' : 'veces'}`;
+  }
+}
+
+function updateTable() {
+  document.getElementById('resultsSection').style.display = 'block';
+  document.getElementById('totalBadge').textContent = `${totalSpins} giros`;
+
+  const maxFreq = Math.max(...frequencies, 1);
+  const tbody = document.getElementById('resultsBody');
+  tbody.innerHTML = '';
+
+  // Group by color
+  const colorMap = {};
+  selectedColors.forEach((ci, si) => {
+    if (!colorMap[ci]) colorMap[ci] = { ci, freq: 0 };
+    colorMap[ci].freq += frequencies[si];
+  });
+
+  Object.values(colorMap).forEach(({ ci, freq }) => {
+    const pct = Math.round((freq / maxFreq) * 100);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>
+        <div class="td-color">
+          <div class="td-dot" style="background:${COLORS[ci].hex}"></div>
+          ${COLORS[ci].name}
+        </div>
+      </td>
+      <td style="font-weight:700;font-family:'Space Grotesk',sans-serif;">${freq}</td>
+      <td>
+        <div class="td-freq">
+          <div class="freq-bar-wrap">
+            <div class="freq-bar" style="width:${pct}%;background:${COLORS[ci].hex}"></div>
+          </div>
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function setStep(n) {
+  [1, 2, 3].forEach(i => {
+    document.getElementById(`step${i}-card`).classList.toggle('active', i === n);
+    const dot = document.getElementById(`sd${i}`);
+    dot.classList.remove('active', 'done');
+    if (i === n) dot.classList.add('active');
+    else if (i < n) dot.classList.add('done');
+  });
+  [1, 2].forEach(i => {
+    const line = document.getElementById(`sl${i}`);
+    line.classList.toggle('done', i < n);
+  });
+}
+
+function resetAll() {
+  numSections  = 4;
+  selectedColors = [];
+  frequencies  = [];
+  totalSpins   = 0;
+  currentAngle = 0;
+  document.getElementById('numDisplay').textContent = '4';
+  buildHintDots();
+  setStep(1);
+}
+</script>
+</body>
+</html>

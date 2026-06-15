@@ -241,6 +241,25 @@
   .result-value { font-size: 1.6rem; font-weight: 800; color: var(--accent); margin: 2px 0; }
   .result-frac  { font-size: 1rem; color: var(--green); font-weight: 700; }
   .result-desc  { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+
+  /* ── Conclusion box ── */
+  .result-conclusion {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fff7f0;
+    border-left: 4px solid var(--orange);
+    border-radius: 0 6px 6px 0;
+    font-size: .85rem;
+    font-weight: 500;
+    font-style: italic;
+    color: #3d2200;
+    line-height: 1.6;
+  }
+  .result-conclusion strong {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--ink);
+  }
 </style>
 </head>
 <body>
@@ -319,6 +338,7 @@
           <div class="result-value" id="result-value">—</div>
           <div class="result-frac"  id="result-frac">—</div>
           <div class="result-desc"  id="result-desc">—</div>
+          <div class="result-conclusion" id="result-conclusion"></div>
         </div>
       </div>
     </div>
@@ -546,6 +566,21 @@ function updateFormula() {
   document.getElementById('result-frac').textContent  = `${inter} / ${condTotal}`;
   document.getElementById('result-desc').textContent  =
     `Probabilidad de ${evtLabel} dado que ocurrió la condición ${condLabel}`;
+
+  // ── Conclusión estadística dinámica ──
+  const concEl = document.getElementById('result-conclusion');
+  const cbV2    = selCondType === 'cb'    ? selCondVal : selEvtVal;
+  const causeV2 = selCondType === 'cause' ? selCondVal : selEvtVal;
+  let conclusion = '';
+  if (selCondType === 'cb') {
+    // Caso 1: Condición = Compañía, Evento = Causa
+    conclusion = `De todos los incendios atendidos por la compañía <strong>${cbV2}</strong>, hay un <strong>${pct}%</strong> de probabilidad de que el origen sea por <strong>${causeV2}</strong>.`;
+  } else {
+    // Caso 2: Condición = Causa, Evento = Compañía
+    conclusion = `Del total regional de incendios provocados por <strong>${causeV2}</strong>, la compañía <strong>${cbV2}</strong> concentra el <strong>${pct}%</strong> de los casos, revelando su nivel de carga operativa para esta emergencia específica.`;
+  }
+  concEl.innerHTML = conclusion;
+
   resBox.classList.add('show');
 }
 

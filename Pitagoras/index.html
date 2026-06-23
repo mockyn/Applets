@@ -18,6 +18,7 @@
     --text-muted:#7a82a8;
     --green:     #34d399;
     --red:       #f87171;
+    --gold:      #fbbf24;
     --sideA:     #60a5fa;
     --sideB:     #a78bfa;
     --sideC:     #f472b6;
@@ -40,252 +41,318 @@
     gap: 1rem;
     background: var(--surface);
   }
-  header h1 {
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-  header span {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
+  header h1 { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 600; color: var(--text); }
+  header span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
 
+  /* ══ EXPLORER VIEW ══ */
   .main {
     display: grid;
-    grid-template-columns: 3fr 2fr;   /* left column gets more space */
+    grid-template-columns: 3fr 2fr;
     flex: 1;
   }
 
-  /* ── LEFT ── */
   .col-left {
     border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    padding: 1.25rem 1.25rem 1rem;
-    gap: 1rem;
+    display: flex; flex-direction: column;
+    padding: 1.25rem 1.25rem 1rem; gap: 1rem;
   }
-
   .canvas-wrap {
-    position: relative;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    flex: 1;
-    min-height: 400px;
+    position: relative; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; flex: 1; min-height: 340px;
   }
-  #triCanvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
+  #triCanvas { display: block; width: 100%; height: 100%; }
 
-  /* SLIDERS */
-  .controls { display: flex; flex-direction: column; gap: .85rem; }
-
+  .controls { display: flex; flex-direction: column; gap: .75rem; }
   .slider-row {
     display: grid;
-    grid-template-columns: 24px 1fr 44px;
-    align-items: center;
-    gap: .75rem;
+    grid-template-columns: 24px 1fr auto;
+    align-items: center; gap: .75rem;
   }
-  .side-label {
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.3rem;
-    font-weight: 600;
-    text-align: center;
-  }
+  .side-label { font-family: 'Crimson Pro', serif; font-size: 1.3rem; font-weight: 600; text-align: center; }
   .side-label.A { color: var(--sideA); }
   .side-label.B { color: var(--sideB); }
   .side-label.C { color: var(--sideC); }
 
   input[type=range] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    outline: none;
-    cursor: pointer;
-    background: var(--border);
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 6px; border-radius: 3px;
+    outline: none; cursor: pointer; background: var(--border);
   }
   input[type=range].A { accent-color: var(--sideA); }
   input[type=range].B { accent-color: var(--sideB); }
   input[type=range].C { accent-color: var(--sideC); }
   input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px; height: 20px;
-    border-radius: 50%;
-    border: 2px solid var(--bg);
-    cursor: pointer;
+    -webkit-appearance: none; width: 20px; height: 20px;
+    border-radius: 50%; border: 2px solid var(--bg); cursor: pointer;
   }
   input[type=range].A::-webkit-slider-thumb { background: var(--sideA); }
   input[type=range].B::-webkit-slider-thumb { background: var(--sideB); }
   input[type=range].C::-webkit-slider-thumb { background: var(--sideC); }
 
   .val-badge {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .9rem;
-    font-weight: 600;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    text-align: center;
-    padding: .25rem .3rem;
+    font-family: 'JetBrains Mono', monospace; font-size: .9rem; font-weight: 600;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; text-align: center; padding: .25rem .35rem; min-width: 30px;
   }
   .val-badge.A { color: var(--sideA); }
   .val-badge.B { color: var(--sideB); }
   .val-badge.C { color: var(--sideC); }
 
-  /* ── RIGHT ── */
-  .col-right {
-    display: flex;
-    flex-direction: column;
-    padding: 1.25rem;
-    gap: 1.25rem;
-  }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem 1.5rem;
-  }
-  .panel-title {
-    font-size: .65rem;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-    color: var(--text-muted);
-    margin-bottom: .9rem;
-    font-weight: 600;
-  }
-
-  .formula {
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.7rem;
-    font-weight: 600;
-    color: var(--text-muted);
+  .slider-meta { display: flex; align-items: center; gap: .4rem; }
+  .role-pill {
+    font-size: .58rem; text-transform: uppercase; letter-spacing: .07em;
+    font-weight: 700; padding: .1rem .35rem; border-radius: 20px;
+    border: 1px solid transparent; white-space: nowrap; min-width: 72px;
     text-align: center;
-    padding: .4rem 0;
   }
-  .formula sup { font-size: .7em; }
+  .role-pill.hip { color: var(--gold); border-color: var(--gold); background: rgba(251,191,36,.08); }
+  .role-pill.cat { color: var(--text-muted); border-color: var(--border); background: transparent; }
 
-  .formula-live {
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.55rem;
-    font-weight: 600;
-    text-align: center;
-    padding: .35rem 0;
-  }
+  /* ── RIGHT COLUMN ── */
+  .col-right { display: flex; flex-direction: column; padding: 1.25rem; gap: 1.1rem; }
+  .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.4rem; }
+  .panel-title { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: .75rem; font-weight: 600; }
+
+  .formula-roles { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; text-align: center; padding: .3rem 0; line-height: 1.3; }
+  .formula-roles sup { font-size: .65em; }
+  .formula-roles sub { font-size: .6em; vertical-align: baseline; position: relative; bottom: -.25em; }
+  .formula-live { font-family: 'Crimson Pro', serif; font-size: 1.45rem; font-weight: 600; text-align: center; padding: .3rem 0; }
   .formula-live sup { font-size: .7em; }
-  .formula-live .fa { color: var(--sideA); }
-  .formula-live .fb { color: var(--sideB); }
-  .formula-live .fc { color: var(--sideC); }
+  .formula-expanded { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; text-align: center; padding: .3rem 0; }
 
-  .formula-expanded {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.15rem;
-    text-align: center;
-    padding: .35rem 0;
-  }
-  .formula-expanded .na { color: var(--sideA); }
-  .formula-expanded .nb { color: var(--sideB); }
-  .formula-expanded .nc { color: var(--sideC); }
+  .divider { border: none; border-top: 1px solid var(--border); margin: .6rem 0; }
 
-  .divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: .65rem 0;
-  }
-
-  /* RESULT BADGE */
   .result-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: .6rem;
-    padding: 1rem 1rem;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 1.05rem;
-    border: 1.5px solid transparent;
-    transition: background .25s, border-color .25s, color .25s;
+    display: flex; align-items: center; justify-content: center;
+    gap: .6rem; padding: .85rem 1rem; border-radius: 10px;
+    font-weight: 700; font-size: 1rem; border: 1.5px solid transparent;
+    transition: background .25s, border-color .25s, color .25s; text-align: center;
+  }
+  .result-badge.green { background: rgba(52,211,153,.1); border-color: var(--green); color: var(--green); }
+  .result-badge.red   { background: rgba(248,113,113,.08); border-color: var(--red); color: var(--red); }
+  .result-badge.gray  { background: rgba(122,130,168,.05); border-color: var(--border); color: var(--text-muted); }
+  .result-badge .icon { font-size: 1.3rem; }
+
+  /* ══ REGISTRO PANEL ══ */
+  .registro-panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem 1.2rem;
+    display: flex; flex-direction: column; gap: .7rem;
+  }
+  .registro-title {
+    font-size: .62rem; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--text-muted); font-weight: 600;
+  }
+  .registro-row {
+    display: grid;
+    grid-template-columns: auto 1fr 1fr 1fr auto auto;
+    align-items: center; gap: .4rem;
+  }
+  .reg-num {
+    font-family: 'Crimson Pro', serif; font-size: 1rem; font-weight: 600;
+    color: var(--text-muted); text-align: center; width: 18px;
+  }
+  .reg-input {
+    font-family: 'JetBrains Mono', monospace; font-size: .85rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; color: var(--text); text-align: center;
+    padding: .3rem .2rem; width: 100%; outline: none;
+    transition: border-color .2s;
+    -moz-appearance: textfield;
+  }
+  .reg-input::-webkit-inner-spin-button,
+  .reg-input::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .reg-input:focus { border-color: var(--text-muted); }
+  .reg-input.valid-side { border-color: var(--green); }
+  .reg-status { font-size: 1.1rem; width: 22px; text-align: center; }
+  .reg-use-btn {
+    font-size: .6rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .04em; padding: .25rem .45rem; border-radius: 6px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-muted); cursor: pointer; white-space: nowrap;
+    transition: border-color .2s, color .2s;
+  }
+  .reg-use-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  .confirm-btn {
+    width: 100%; padding: .75rem; border-radius: 10px;
+    background: rgba(108,143,255,.12); border: 1.5px solid #6c8fff;
+    color: #6c8fff; font-weight: 700; font-size: .95rem;
+    cursor: pointer; transition: background .2s, color .2s;
+    letter-spacing: .02em;
+  }
+  .confirm-btn:hover { background: rgba(108,143,255,.22); color: #fff; }
+  .confirm-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+  /* ══ CELEBRATION SCREEN ══ */
+  #celebrationScreen {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+  .celeb-header {
+    padding: 1.5rem 2rem 1rem;
+    text-align: center;
+    position: relative;
+  }
+  .celeb-title {
+    font-family: 'Crimson Pro', serif; font-size: 2rem; font-weight: 600;
+    color: var(--green); margin-bottom: .3rem;
+  }
+  .celeb-sub { font-size: .85rem; color: var(--text-muted); }
+  .celeb-canvases {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem; padding: 0 1.5rem 1rem; flex: 1;
+    min-height: 0;
+  }
+  .celeb-tri-wrap {
+    display: flex; flex-direction: column; gap: .5rem;
+  }
+  .celeb-canvas-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; flex: 1; min-height: 180px;
+    position: relative;
+  }
+  .celeb-canvas-box canvas { display: block; width: 100%; height: 100%; }
+  .celeb-label {
+    text-align: center; font-family: 'JetBrains Mono', monospace;
+    font-size: .8rem; color: var(--text-muted);
+    padding: .2rem 0 .4rem;
+  }
+  .celeb-label span { font-weight: 700; }
+  .celeb-label .la { color: var(--sideA); }
+  .celeb-label .lb { color: var(--sideB); }
+  .celeb-label .lc { color: var(--sideC); }
+  .celeb-back {
+    margin: 0 1.5rem 1rem; padding: .65rem; border-radius: 10px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text-muted); cursor: pointer; font-size: .85rem;
+    font-weight: 600; transition: border-color .2s, color .2s;
     text-align: center;
   }
-  .result-badge.green {
-    background: rgba(52,211,153,.1);
-    border-color: var(--green);
-    color: var(--green);
+  .celeb-back:hover { border-color: var(--text-muted); color: var(--text); }
+
+  /* confetti canvas */
+  #confettiCanvas {
+    position: fixed; inset: 0; pointer-events: none; z-index: 999;
   }
-  .result-badge.red {
-    background: rgba(248,113,113,.08);
-    border-color: var(--red);
-    color: var(--red);
-  }
-  .result-badge.gray {
-    background: rgba(122,130,168,.05);
-    border-color: var(--border);
-    color: var(--text-muted);
-  }
-  .result-badge .icon { font-size: 1.4rem; }
 
   footer {
-    padding: .6rem 2rem;
-    border-top: 1px solid var(--border);
-    font-size: .7rem;
-    color: var(--text-muted);
-    text-align: center;
+    padding: .5rem 2rem; border-top: 1px solid var(--border);
+    font-size: .7rem; color: var(--text-muted); text-align: center;
   }
+
+  /* ══ INSTRUCTIONS OVERLAY ══ */
+  #instructionsOverlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 1.1rem; padding: 2rem;
+    background: rgba(15,17,23,0.82);
+    backdrop-filter: blur(2px);
+    border-radius: 12px;
+    transition: opacity .4s, visibility .4s;
+    z-index: 10;
+  }
+  #instructionsOverlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .inst-icon {
+    font-size: 2.8rem; color: var(--text-muted);
+    font-family: 'Crimson Pro', serif; line-height: 1;
+    opacity: .5;
+  }
+  .inst-title {
+    font-family: 'Crimson Pro', serif; font-size: 1.35rem;
+    font-weight: 600; color: var(--text); text-align: center;
+  }
+  .inst-steps {
+    display: flex; flex-direction: column; gap: .6rem; width: 100%; max-width: 340px;
+  }
+  .inst-step {
+    display: flex; align-items: flex-start; gap: .65rem;
+    font-size: .82rem; color: var(--text-muted); line-height: 1.4;
+  }
+  .inst-n {
+    flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: .7rem; font-weight: 700; color: var(--text-muted);
+    margin-top: .05rem;
+  }
+  .inst-hint {
+    font-size: .72rem; color: var(--text-muted);
+    text-align: center; opacity: .7;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
 
   @media (max-width: 780px) {
     .main { grid-template-columns: 1fr; }
     .col-left { border-right: none; border-bottom: 1px solid var(--border); }
+    .celeb-canvases { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
+
+<canvas id="confettiCanvas"></canvas>
 
 <header>
   <h1>Teorema de Pitágoras</h1>
   <span>Explorador interactivo</span>
 </header>
 
-<div class="main">
+<!-- ══════════════ EXPLORER VIEW ══════════════ -->
+<div class="main" id="explorerView">
 
-  <!-- ═══════════════ LEFT ═══════════════ -->
   <div class="col-left">
     <div class="canvas-wrap">
       <canvas id="triCanvas"></canvas>
+      <div id="instructionsOverlay">
+        <div class="inst-icon">△</div>
+        <div class="inst-title">Explora el Teorema de Pitágoras</div>
+        <div class="inst-steps">
+          <div class="inst-step"><span class="inst-n">1</span>Mueve los deslizadores para cambiar los lados A, B y C</div>
+          <div class="inst-step"><span class="inst-n">2</span>Observa si los lados forman un triángulo rectángulo</div>
+          <div class="inst-step"><span class="inst-n">3</span>Encuentra 3 triángulos rectángulos distintos y regístralos</div>
+        </div>
+        <div class="inst-hint">← Mueve cualquier deslizador para comenzar</div>
+      </div>
     </div>
-
     <div class="controls">
       <div class="slider-row">
         <span class="side-label A">A</span>
-        <input type="range" id="slA" class="A" min="1" max="20" step="1" value="3">
-        <span class="val-badge A" id="vA">3</span>
+        <input type="range" id="slA" class="A" min="1" max="20" step="1" value="1">
+        <div class="slider-meta">
+          <span class="val-badge A" id="vA">1</span>
+          <span class="role-pill" id="roleA"></span>
+        </div>
       </div>
       <div class="slider-row">
         <span class="side-label B">B</span>
-        <input type="range" id="slB" class="B" min="1" max="20" step="1" value="4">
-        <span class="val-badge B" id="vB">4</span>
+        <input type="range" id="slB" class="B" min="1" max="20" step="1" value="1">
+        <div class="slider-meta">
+          <span class="val-badge B" id="vB">1</span>
+          <span class="role-pill" id="roleB"></span>
+        </div>
       </div>
       <div class="slider-row">
         <span class="side-label C">C</span>
-        <input type="range" id="slC" class="C" min="1" max="20" step="1" value="5">
-        <span class="val-badge C" id="vC">5</span>
+        <input type="range" id="slC" class="C" min="1" max="20" step="1" value="1">
+        <div class="slider-meta">
+          <span class="val-badge C" id="vC">1</span>
+          <span class="role-pill" id="roleC"></span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ═══════════════ RIGHT ═══════════════ -->
   <div class="col-right">
-
     <div class="panel">
       <div class="panel-title">Teorema de Pitágoras</div>
-      <div class="formula">A<sup>2</sup> + B<sup>2</sup> = C<sup>2</sup></div>
+      <div class="formula-roles" id="formulaRoles"></div>
     </div>
 
     <div class="panel">
@@ -295,22 +362,77 @@
       <div class="formula-expanded" id="fExpanded"></div>
       <hr class="divider">
       <div class="result-badge gray" id="resultBadge">
-        <span class="icon">—</span>
-        <span id="resultText"></span>
+        <span class="icon">—</span><span></span>
       </div>
     </div>
 
+    <!-- REGISTRO -->
+    <div class="registro-panel">
+      <div class="registro-title">Mis triángulos rectángulos</div>
+
+      <div class="registro-row" id="regRow0">
+        <div class="reg-num">1</div>
+        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="0" data-col="0">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="0" data-col="1">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="0" data-col="2">
+        <span class="reg-status" id="regStatus0"></span>
+        <button class="reg-use-btn" data-row="0">Usar actuales</button>
+      </div>
+
+      <div class="registro-row" id="regRow1">
+        <div class="reg-num">2</div>
+        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="1" data-col="0">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="1" data-col="1">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="1" data-col="2">
+        <span class="reg-status" id="regStatus1"></span>
+        <button class="reg-use-btn" data-row="1">Usar actuales</button>
+      </div>
+
+      <div class="registro-row" id="regRow2">
+        <div class="reg-num">3</div>
+        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="2" data-col="0">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="2" data-col="1">
+        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="2" data-col="2">
+        <span class="reg-status" id="regStatus2"></span>
+        <button class="reg-use-btn" data-row="2">Usar actuales</button>
+      </div>
+
+      <button class="confirm-btn" id="confirmBtn">Registrar mis triángulos →</button>
+    </div>
   </div>
 </div>
 
+<!-- ══════════════ CELEBRATION VIEW ══════════════ -->
+<div id="celebrationScreen">
+  <div class="celeb-header">
+    <div class="celeb-title">🎉 ¡Encontraste 3 triángulos rectángulos!</div>
+    <div class="celeb-sub">Bien hecho — los tres cumplen el Teorema de Pitágoras</div>
+  </div>
+  <div class="celeb-canvases" id="celebCanvases">
+    <div class="celeb-tri-wrap">
+      <div class="celeb-canvas-box"><canvas id="celCanvas0"></canvas></div>
+      <div class="celeb-label" id="celLabel0"></div>
+    </div>
+    <div class="celeb-tri-wrap">
+      <div class="celeb-canvas-box"><canvas id="celCanvas1"></canvas></div>
+      <div class="celeb-label" id="celLabel1"></div>
+    </div>
+    <div class="celeb-tri-wrap">
+      <div class="celeb-canvas-box"><canvas id="celCanvas2"></canvas></div>
+      <div class="celeb-label" id="celLabel2"></div>
+    </div>
+  </div>
+  <div class="celeb-back" id="celebBack">← Volver al explorador</div>
+</div>
+
 <footer>
-  Mueve los deslizadores y descubre cuándo se cumple A² + B² = C²
+  Mueve los deslizadores · Encuentra 3 triángulos rectángulos · Regístralos
 </footer>
 
 <script>
-/* ══════════════════════════════════════════════════════
-   CANVAS
-══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   CANVAS & RESIZE
+══════════════════════════════════════════════════ */
 const canvas = document.getElementById('triCanvas');
 const ctx    = canvas.getContext('2d');
 
@@ -322,372 +444,469 @@ function resizeCanvas() {
 }
 window.addEventListener('resize', resizeCanvas);
 
-/* ══════════════════════════════════════════════════════
-   CONTROLS
-══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   SLIDERS
+══════════════════════════════════════════════════ */
 const slA = document.getElementById('slA');
 const slB = document.getElementById('slB');
 const slC = document.getElementById('slC');
-[slA, slB, slC].forEach(s => s.addEventListener('input', update));
 
-/* ══════════════════════════════════════════════════════
+let hasInteracted = false;
+const overlay = document.getElementById('instructionsOverlay');
+
+function onSliderMove() {
+  if (!hasInteracted) {
+    hasInteracted = true;
+    overlay.classList.add('hidden');
+  }
+  update();
+}
+[slA, slB, slC].forEach(s => s.addEventListener('input', onSliderMove));
+
+/* ══════════════════════════════════════════════════
    PALETTE
-══════════════════════════════════════════════════════ */
-const COL = {
-  A:     '#60a5fa',
-  B:     '#a78bfa',
-  C:     '#f472b6',
-  angle: '#e8eaf2',
-  right: '#fbbf24',
-  grid:  '#1e2336',
-  gap:   '#f87171',   // colour for the "gap" line when triangle fails
-};
+══════════════════════════════════════════════════ */
+const SIDE_COLOR = { A:'#60a5fa', B:'#a78bfa', C:'#f472b6' };
+const COL = { angle:'#e8eaf2', right:'#fbbf24', grid:'#1e2336', gap:'#f87171', gold:'#fbbf24' };
 
-/* ══════════════════════════════════════════════════════
-   MATH HELPERS
-══════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   MATH
+══════════════════════════════════════════════════ */
 function deg(r) { return r * 180 / Math.PI; }
 
-function isTriangle(a, b, c) {
-  return a + b > c && a + c > b && b + c > a;
+function isTriangle(a,b,c) { return a+b>c && a+c>b && b+c>a; }
+
+function isRightTriangle(a,b,c) {
+  if (!isTriangle(a,b,c)) return false;
+  const s = [a,b,c].map(x=>x*x).sort((x,y)=>x-y);
+  return s[0]+s[1] === s[2];
 }
 
-function computeAngles(a, b, c) {
-  const A = Math.acos(Math.max(-1, Math.min(1, (b*b + c*c - a*a) / (2*b*c))));
-  const B = Math.acos(Math.max(-1, Math.min(1, (a*a + c*c - b*b) / (2*a*c))));
-  const C = Math.PI - A - B;
-  return { A, B, C };
+// Key for dedup: sorted sides joined
+function triKey(a,b,c) { return [a,b,c].sort((x,y)=>x-y).join('-'); }
+
+function getRoles(a,b,c) {
+  const sides = [
+    {label:'A', val:a, color:SIDE_COLOR.A},
+    {label:'B', val:b, color:SIDE_COLOR.B},
+    {label:'C', val:c, color:SIDE_COLOR.C},
+  ];
+  const sorted = [...sides].sort((x,y)=>y.val-x.val);
+  return { hyp:sorted[0], cat1:sorted[1], cat2:sorted[2] };
 }
 
-/* ══════════════════════════════════════════════════════
-   GRID
-══════════════════════════════════════════════════════ */
-function drawGrid() {
-  const W = canvas.width, H = canvas.height;
-  ctx.strokeStyle = COL.grid;
-  ctx.lineWidth = 0.5;
-  const step = 28;
-  for (let x = 0; x < W; x += step) {
-    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-  }
-  for (let y = 0; y < H; y += step) {
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
+function computeAngles(a,b,c) {
+  const A = Math.acos(Math.max(-1,Math.min(1,(b*b+c*c-a*a)/(2*b*c))));
+  const B = Math.acos(Math.max(-1,Math.min(1,(a*a+c*c-b*b)/(2*a*c))));
+  return { A, B, C: Math.PI-A-B };
 }
 
-/* ══════════════════════════════════════════════════════
-   ANGLE ARC / RIGHT-ANGLE SQUARE
-══════════════════════════════════════════════════════ */
-function sortAngles(d1, d2) {
-  let from = d1, to = d2;
-  if (from > to) [from, to] = [to, from];
-  if (to - from > Math.PI) {
-    const span = 2 * Math.PI - (to - from);
-    const newFrom = to;
-    return [newFrom, newFrom + span];
-  }
-  return [from, to];
+/* ══════════════════════════════════════════════════
+   DRAW HELPERS
+══════════════════════════════════════════════════ */
+function drawGrid(c2d, W, H) {
+  c2d.strokeStyle = COL.grid; c2d.lineWidth = 0.5;
+  for (let x=0;x<W;x+=28){ c2d.beginPath();c2d.moveTo(x,0);c2d.lineTo(x,H);c2d.stroke(); }
+  for (let y=0;y<H;y+=28){ c2d.beginPath();c2d.moveTo(0,y);c2d.lineTo(W,y);c2d.stroke(); }
 }
 
-function angleLabelPos(cx, cy, from, to, r) {
-  const mid = (from + to) / 2;
-  return { x: cx + Math.cos(mid) * r * 2.0, y: cy + Math.sin(mid) * r * 2.0 };
+function sortAngles(d1,d2) {
+  let from=d1,to=d2;
+  if(from>to)[from,to]=[to,from];
+  if(to-from>Math.PI){ const sp=2*Math.PI-(to-from); return [to,to+sp]; }
+  return [from,to];
 }
 
-function drawAngleArc(cx, cy, from, to, r, isRight) {
-  if (isRight) {
-    const sz  = r * 0.72;
-    const dx1 = Math.cos(from) * sz, dy1 = Math.sin(from) * sz;
-    const dx2 = Math.cos(to)   * sz, dy2 = Math.sin(to)   * sz;
-    ctx.strokeStyle = COL.right;
-    ctx.lineWidth   = 2;
-    ctx.beginPath();
-    ctx.moveTo(cx + dx1, cy + dy1);
-    ctx.lineTo(cx + dx1 + dx2, cy + dy1 + dy2);
-    ctx.lineTo(cx + dx2, cy + dy2);
-    ctx.stroke();
+function angleLabelPos(cx,cy,from,to,r) {
+  const mid=(from+to)/2;
+  return { x:cx+Math.cos(mid)*r*2.1, y:cy+Math.sin(mid)*r*2.1 };
+}
+
+function drawAngleArc(c2d,cx,cy,from,to,r,isRight) {
+  if(isRight){
+    const sz=r*0.72;
+    const dx1=Math.cos(from)*sz, dy1=Math.sin(from)*sz;
+    const dx2=Math.cos(to)*sz,   dy2=Math.sin(to)*sz;
+    c2d.strokeStyle=COL.right; c2d.lineWidth=2;
+    c2d.beginPath();
+    c2d.moveTo(cx+dx1,cy+dy1); c2d.lineTo(cx+dx1+dx2,cy+dy1+dy2); c2d.lineTo(cx+dx2,cy+dy2);
+    c2d.stroke();
   } else {
-    ctx.strokeStyle = COL.angle;
-    ctx.lineWidth   = 1.5;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, from, to, false);
-    ctx.stroke();
+    c2d.strokeStyle=COL.angle; c2d.lineWidth=1.5;
+    c2d.beginPath(); c2d.arc(cx,cy,r,from,to,false); c2d.stroke();
   }
 }
 
-/* ══════════════════════════════════════════════════════
-   SIDE LABEL (offset perpendicularly outward from centroid)
-══════════════════════════════════════════════════════ */
-function drawSideLabel(x1, y1, x2, y2, label, color, cx, cy) {
-  // Midpoint of the side
-  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-  // Perpendicular to the side (one of two directions)
-  let nx = -(y2 - y1), ny = (x2 - x1);
-  const len = Math.sqrt(nx*nx + ny*ny) || 1;
-  nx /= len; ny /= len;
-  // Ensure normal points AWAY from centroid
-  const toCx = cx - mx, toCy = cy - my;
-  if (nx * toCx + ny * toCy > 0) { nx = -nx; ny = -ny; }
-  const off = 22;
-  ctx.fillStyle = color;
-  ctx.font = `bold 17px 'Crimson Pro', serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(label, mx + nx * off, my + ny * off);
+function drawSideLabel(c2d,x1,y1,x2,y2,label,color,cx,cy) {
+  const mx=(x1+x2)/2, my=(y1+y2)/2;
+  let nx=-(y2-y1), ny=(x2-x1), len=Math.sqrt(nx*nx+ny*ny)||1;
+  nx/=len; ny/=len;
+  if(nx*(cx-mx)+ny*(cy-my)>0){nx=-nx;ny=-ny;}
+  c2d.fillStyle=color;
+  c2d.font="bold 15px 'Crimson Pro', serif";
+  c2d.textAlign='center'; c2d.textBaseline='middle';
+  c2d.fillText(label, mx+nx*20, my+ny*20);
 }
 
-/* ══════════════════════════════════════════════════════
-   DRAW VALID TRIANGLE
-══════════════════════════════════════════════════════ */
-function drawTriangle(a, b, c, scale, ox, oy) {
-  const angs = computeAngles(a, b, c);
+/* ══════════════════════════════════════════════════
+   DRAW TRIANGLE (reusable, takes a 2d context + bounds)
+══════════════════════════════════════════════════ */
+function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
+  const angs = computeAngles(a,b,c);
   const ang_A = angs.A;
+  const scaleX = (W-margin*2) / Math.max(c, b*Math.cos(ang_A));
+  const scaleY = (H-margin*2) / (b*Math.sin(ang_A));
+  const scale  = Math.min(scaleX, scaleY, (Math.min(W,H)-margin*2)/Math.max(a,b,c));
+  const triW   = Math.max(c*scale, b*Math.cos(ang_A)*scale);
+  const triH   = b*Math.sin(ang_A)*scale;
+  const ox = (W-triW)/2, oy = (H-triH)/2+triH;
 
-  // Vertices
-  // PA = left base, PB = right base, PC = apex
-  // Base PA–PB = side c;  PA–PC = side b;  PB–PC = side a
-  // Angle at PA = A, at PB = B, at PC = C
-  const PA = { x: ox,                               y: oy };
-  const PB = { x: ox + c * scale,                   y: oy };
-  const PC = { x: ox + b * Math.cos(ang_A) * scale, y: oy - b * Math.sin(ang_A) * scale };
+  const PA = {x:ox,           y:oy};
+  const PB = {x:ox+c*scale,   y:oy};
+  const PC = {x:ox+b*Math.cos(ang_A)*scale, y:oy-b*Math.sin(ang_A)*scale};
 
-  // Fill
-  ctx.beginPath();
-  ctx.moveTo(PA.x, PA.y); ctx.lineTo(PB.x, PB.y); ctx.lineTo(PC.x, PC.y);
-  ctx.closePath();
-  ctx.fillStyle = 'rgba(108,143,255,0.06)';
-  ctx.fill();
+  // fill
+  c2d.beginPath(); c2d.moveTo(PA.x,PA.y); c2d.lineTo(PB.x,PB.y); c2d.lineTo(PC.x,PC.y);
+  c2d.closePath(); c2d.fillStyle='rgba(108,143,255,0.06)'; c2d.fill();
 
-  // Sides
-  const side = (ax, ay, bx, by, col) => {
-    ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+  const sidePairs = { A:[PB,PC], B:[PA,PC], C:[PA,PB] };
+
+  ['A','B','C'].forEach(lbl => {
+    const [P1,P2]=sidePairs[lbl];
+    const col=SIDE_COLOR[lbl], isHyp=lbl===hypLabel;
+    if(isHyp){
+      c2d.strokeStyle=COL.gold; c2d.lineWidth=7; c2d.lineCap='round';
+      c2d.globalAlpha=0.22;
+      c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
+      c2d.globalAlpha=1;
+      c2d.strokeStyle=COL.gold; c2d.lineWidth=4.5; c2d.lineCap='round';
+      c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
+    }
+    c2d.strokeStyle=col; c2d.lineWidth=isHyp?2.5:3; c2d.lineCap='round';
+    c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
+  });
+
+  const centX=(PA.x+PB.x+PC.x)/3, centY=(PA.y+PB.y+PC.y)/3;
+  ['A','B','C'].forEach(lbl=>{
+    const [P1,P2]=sidePairs[lbl];
+    drawSideLabel(c2d,P1.x,P1.y,P2.x,P2.y,lbl,SIDE_COLOR[lbl],centX,centY);
+  });
+
+  const shortPx=Math.min(
+    Math.hypot(PB.x-PC.x,PB.y-PC.y),
+    Math.hypot(PA.x-PC.x,PA.y-PC.y),
+    Math.hypot(PA.x-PB.x,PA.y-PB.y)
+  );
+  const ARC_R=Math.min(shortPx*0.22,28);
+  c2d.font='11px Inter, sans-serif'; c2d.textAlign='center'; c2d.textBaseline='middle';
+
+  const vtxAng=(P,d1,d2,adeg,isR)=>{
+    const [from,to]=sortAngles(d1,d2);
+    drawAngleArc(c2d,P.x,P.y,from,to,ARC_R,isR);
+    const lp=angleLabelPos(P.x,P.y,from,to,ARC_R);
+    c2d.fillStyle=isR?COL.right:COL.angle;
+    c2d.fillText(adeg+'°',lp.x,lp.y);
   };
-  side(PB.x, PB.y, PC.x, PC.y, COL.A);   // side a  (opposite A at PA)
-  side(PA.x, PA.y, PC.x, PC.y, COL.B);   // side b  (opposite B at PB)
-  side(PA.x, PA.y, PB.x, PB.y, COL.C);   // side c  (opposite C at PC — hyp candidate)
+  const aD=Math.round(deg(angs.A)), bD=Math.round(deg(angs.B)), cD=Math.round(deg(angs.C));
+  vtxAng(PA,Math.atan2(PB.y-PA.y,PB.x-PA.x),Math.atan2(PC.y-PA.y,PC.x-PA.x),aD,Math.abs(aD-90)<1);
+  vtxAng(PB,Math.atan2(PA.y-PB.y,PA.x-PB.x),Math.atan2(PC.y-PB.y,PC.x-PB.x),bD,Math.abs(bD-90)<1);
+  vtxAng(PC,Math.atan2(PA.y-PC.y,PA.x-PC.x),Math.atan2(PB.y-PC.y,PB.x-PC.x),cD,Math.abs(cD-90)<1);
 
-  // Side labels — pass centroid so normal always points outward
-  const centX = (PA.x + PB.x + PC.x) / 3;
-  const centY = (PA.y + PB.y + PC.y) / 3;
-  drawSideLabel(PB.x, PB.y, PC.x, PC.y, 'A', COL.A, centX, centY);
-  drawSideLabel(PA.x, PA.y, PC.x, PC.y, 'B', COL.B, centX, centY);
-  drawSideLabel(PA.x, PA.y, PB.x, PB.y, 'C', COL.C, centX, centY);
-
-  // Angle arcs — radius capped to a fraction of the SHORTEST side in pixels
-  const shortestPx = Math.min(
-    Math.hypot(PB.x-PC.x, PB.y-PC.y),   // side a
-    Math.hypot(PA.x-PC.x, PA.y-PC.y),   // side b
-    Math.hypot(PA.x-PB.x, PA.y-PB.y)    // side c
-  );
-  const ARC_R = Math.min(shortestPx * 0.22, 28);
-  ctx.font = `12px Inter, sans-serif`;
-  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-
-  // Angle A at PA
-  const ang_A_deg = Math.round(deg(angs.A));
-  const [fromA, toA] = sortAngles(
-    Math.atan2(PB.y - PA.y, PB.x - PA.x),
-    Math.atan2(PC.y - PA.y, PC.x - PA.x)
-  );
-  const isRightA = Math.abs(ang_A_deg - 90) < 1;
-  drawAngleArc(PA.x, PA.y, fromA, toA, ARC_R, isRightA);
-  const lA = angleLabelPos(PA.x, PA.y, fromA, toA, ARC_R);
-  ctx.fillStyle = isRightA ? COL.right : COL.angle;
-  ctx.fillText(ang_A_deg + '°', lA.x, lA.y);
-
-  // Angle B at PB
-  const ang_B_deg = Math.round(deg(angs.B));
-  const [fromB, toB] = sortAngles(
-    Math.atan2(PA.y - PB.y, PA.x - PB.x),
-    Math.atan2(PC.y - PB.y, PC.x - PB.x)
-  );
-  const isRightB = Math.abs(ang_B_deg - 90) < 1;
-  drawAngleArc(PB.x, PB.y, fromB, toB, ARC_R, isRightB);
-  const lB = angleLabelPos(PB.x, PB.y, fromB, toB, ARC_R);
-  ctx.fillStyle = isRightB ? COL.right : COL.angle;
-  ctx.fillText(ang_B_deg + '°', lB.x, lB.y);
-
-  // Angle C at PC
-  const ang_C_deg = Math.round(deg(angs.C));
-  const [fromC, toC] = sortAngles(
-    Math.atan2(PA.y - PC.y, PA.x - PC.x),
-    Math.atan2(PB.y - PC.y, PB.x - PC.x)
-  );
-  const isRightC = Math.abs(ang_C_deg - 90) < 1;
-  drawAngleArc(PC.x, PC.y, fromC, toC, ARC_R, isRightC);
-  const lC = angleLabelPos(PC.x, PC.y, fromC, toC, ARC_R);
-  ctx.fillStyle = isRightC ? COL.right : COL.angle;
-  ctx.fillText(ang_C_deg + '°', lC.x, lC.y);
-
-  // Vertex dots
-  [PA, PB, PC].forEach(p => {
-    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, 2*Math.PI);
-    ctx.fillStyle = COL.angle; ctx.fill();
+  [PA,PB,PC].forEach(p=>{
+    c2d.beginPath(); c2d.arc(p.x,p.y,4,0,2*Math.PI);
+    c2d.fillStyle=COL.angle; c2d.fill();
   });
 }
 
-/* ══════════════════════════════════════════════════════
-   DRAW OPEN CHAIN (invalid triangle)
-   Strategy: place A and B as two sides from a shared
-   corner, then draw C starting from the end of B — 
-   if C is too short or too long to close, the gap
-   (or overshoot) is shown in red with a dashed line.
-══════════════════════════════════════════════════════ */
-function drawOpenChain(a, b, c, scale, W, H) {
-  // We'll lay out the chain along the bottom:
-  // P0 = pivot (left), P1 = end of side B, P2 = end of side A from P0
-  // Then C must connect P1 to P2 — show how it falls short or overshoots.
+/* ══════════════════════════════════════════════════
+   DRAW OPEN CHAIN
+══════════════════════════════════════════════════ */
+function drawOpenChain(a,b,c,W,H) {
+  const fixedAngle=Math.PI*0.55, margin=60;
+  const sc=(Math.min(W,H)-margin*2)/Math.max(a,b,c);
+  const P0={x:W*0.18,y:H*0.72};
+  const P1={x:P0.x+c*sc,y:P0.y};
+  const P2={x:P0.x+b*sc*Math.cos(fixedAngle),y:P0.y-b*sc*Math.sin(fixedAngle)};
+  const dx=P2.x-P1.x,dy=P2.y-P1.y,dist=Math.sqrt(dx*dx+dy*dy);
+  const ux=dx/dist,uy=dy/dist;
+  const P3={x:P1.x+a*sc*ux,y:P1.y+a*sc*uy};
 
-  // Use a fixed angle of ~55° between A and B so the chain looks like
-  // an "almost triangle" — visually intuitive.
-  const fixedAngle = Math.PI * 0.55;   // ~100° opening so sides spread apart
-
-  const margin = 60;
-  const maxSide = Math.max(a, b, c);
-  const sc = (Math.min(W, H) - margin * 2) / maxSide;
-
-  // Anchor at bottom-left area
-  const P0 = { x: W * 0.18, y: H * 0.72 };
-  // Side C along the base from P0
-  const P1 = { x: P0.x + c * sc, y: P0.y };
-  // Side B going up-right at fixedAngle from P0
-  const P2 = { x: P0.x + b * sc * Math.cos(fixedAngle),
-                y: P0.y - b * sc * Math.sin(fixedAngle) };
-  // Side A must start from P1 and go toward P2 direction
-  // Direction from P1 toward P2
-  const dx = P2.x - P1.x, dy = P2.y - P1.y;
-  const dist = Math.sqrt(dx*dx + dy*dy);
-  const ux = dx/dist, uy = dy/dist;
-  // End of side A from P1 (may not reach P2)
-  const P3 = { x: P1.x + a * sc * ux, y: P1.y + a * sc * uy };
-
-  const side = (ax, ay, bx, by, col, dash) => {
-    ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round';
-    if (dash) ctx.setLineDash([8, 5]); else ctx.setLineDash([]);
-    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+  const side=(ax,ay,bx,by,col,dash)=>{
+    ctx.strokeStyle=col; ctx.lineWidth=3; ctx.lineCap='round';
+    ctx.setLineDash(dash?[8,5]:[]);
+    ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
     ctx.setLineDash([]);
   };
+  side(P0.x,P0.y,P1.x,P1.y,SIDE_COLOR.C,false);
+  side(P0.x,P0.y,P2.x,P2.y,SIDE_COLOR.B,false);
+  side(P1.x,P1.y,P3.x,P3.y,SIDE_COLOR.A,false);
 
-  // Draw the three sides as a chain: C (base), B (from P0 up), A (from P1 toward P2)
-  side(P0.x, P0.y, P1.x, P1.y, COL.C, false);   // C: base
-  side(P0.x, P0.y, P2.x, P2.y, COL.B, false);   // B: upper-left arm
-  side(P1.x, P1.y, P3.x, P3.y, COL.A, false);   // A: from right end
-
-  // Gap (or overshoot) between P3 and P2 — dashed red
-  const gapDist = Math.sqrt((P3.x-P2.x)**2 + (P3.y-P2.y)**2);
-  if (gapDist > 2) {
-    side(P3.x, P3.y, P2.x, P2.y, COL.gap, true);
-    // Small gap label
-    ctx.fillStyle = COL.gap;
-    ctx.font = '12px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const gx = (P3.x + P2.x)/2 + 12, gy = (P3.y + P2.y)/2 - 12;
-    ctx.fillText('no cierra', gx, gy);
+  const gapDist=Math.hypot(P3.x-P2.x,P3.y-P2.y);
+  if(gapDist>2){
+    side(P3.x,P3.y,P2.x,P2.y,COL.gap,true);
+    ctx.fillStyle=COL.gap; ctx.font='bold 14px Inter, sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    ctx.fillText('El triángulo no cierra', W/2, 20);
   }
 
-  // Endpoint dots
-  [P0, P1, P2, P3].forEach((p, i) => {
-    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, 2*Math.PI);
-    ctx.fillStyle = i === 2 ? '#a78bfa' : (i === 3 ? '#60a5fa' : COL.angle);
-    ctx.fill();
+  [P0,P1,P2,P3].forEach((p,i)=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,4,0,2*Math.PI);
+    ctx.fillStyle=i===2?SIDE_COLOR.B:(i===3?SIDE_COLOR.A:COL.angle); ctx.fill();
+  });
+  const lbl=(ax,ay,bx,by,txt,col)=>{
+    const mx=(ax+bx)/2,my=(ay+by)/2;
+    let nx=-(by-ay),ny=(bx-ax),len=Math.sqrt(nx*nx+ny*ny)||1; nx/=len; ny/=len;
+    ctx.fillStyle=col; ctx.font="bold 15px 'Crimson Pro', serif";
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(txt,mx+nx*20,my+ny*20);
+  };
+  lbl(P0.x,P0.y,P1.x,P1.y,'C',SIDE_COLOR.C);
+  lbl(P0.x,P0.y,P2.x,P2.y,'B',SIDE_COLOR.B);
+  lbl(P1.x,P1.y,P3.x,P3.y,'A',SIDE_COLOR.A);
+}
+
+/* ══════════════════════════════════════════════════
+   ROLE PILLS
+══════════════════════════════════════════════════ */
+function updateRolePills(roles, isRight) {
+  ['A','B','C'].forEach(lbl=>{
+    const pill=document.getElementById('role'+lbl);
+    if(!isRight){ pill.textContent=''; pill.className='role-pill'; return; }
+    const isHyp=roles.hyp.label===lbl;
+    pill.textContent=isHyp?'hipotenusa':'cateto';
+    pill.className='role-pill '+(isHyp?'hip':'cat');
+  });
+}
+
+/* ══════════════════════════════════════════════════
+   ALGEBRA PANEL
+══════════════════════════════════════════════════ */
+function updateAlgebra(a,b,c,valid) {
+  const roles=getRoles(a,b,c);
+  const {hyp,cat1,cat2}=roles;
+  const hc=hyp.color, c1c=cat1.color, c2c=cat2.color;
+
+  document.getElementById('formulaRoles').innerHTML=
+    `<span style="color:${c1c}">Cateto<sub>1</sub><sup>2</sup></span>`+
+    ` + <span style="color:${c2c}">Cateto<sub>2</sub><sup>2</sup></span>`+
+    ` = <span style="color:${hc}">Hipotenusa<sup>2</sup></span>`;
+
+  document.getElementById('fLive').innerHTML=
+    `<span style="color:${c1c}">${cat1.label}<sup>2</sup></span>`+
+    ` + <span style="color:${c2c}">${cat2.label}<sup>2</sup></span>`+
+    ` = <span style="color:${hc}">${hyp.label}<sup>2</sup></span>`;
+
+  const h2=hyp.val*hyp.val, c12=cat1.val*cat1.val, c22=cat2.val*cat2.val, sum=c12+c22;
+  const sym=sum===h2?'=':(sum>h2?'>':'<');
+  document.getElementById('fExpanded').innerHTML=
+    `<span style="color:${c1c}">${c12}</span>`+
+    ` + <span style="color:${c2c}">${c22}</span>`+
+    ` <span style="color:var(--text-muted)">${sym}</span>`+
+    ` <span style="color:${hc}">${h2}</span>`;
+
+  const badge=document.getElementById('resultBadge');
+  if(!valid){
+    badge.className='result-badge gray';
+    badge.innerHTML=`<span class="icon">⚠️</span><span>Triángulo no construible</span>`;
+  } else if(sum===h2){
+    badge.className='result-badge green';
+    badge.innerHTML=`<span class="icon">✔️</span><span>¡Es un Triángulo Rectángulo!</span>`;
+  } else {
+    badge.className='result-badge red';
+    badge.innerHTML=`<span class="icon">❌</span><span>No es un Triángulo Rectángulo</span>`;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MAIN EXPLORER UPDATE
+══════════════════════════════════════════════════ */
+function update() {
+  const a=parseInt(slA.value), b=parseInt(slB.value), c=parseInt(slC.value);
+  document.getElementById('vA').textContent=a;
+  document.getElementById('vB').textContent=b;
+  document.getElementById('vC').textContent=c;
+
+  // Don't draw until the student has moved a slider
+  if (!hasInteracted) return;
+
+  const roles=getRoles(a,b,c);
+  const valid=isTriangle(a,b,c);
+  const right=isRightTriangle(a,b,c);
+  updateRolePills(roles,right);
+
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H); drawGrid(ctx,W,H);
+
+  if(valid) drawTriangleOnCtx(ctx,a,b,c,W,H,roles.hyp.label);
+  else drawOpenChain(a,b,c,W,H);
+
+  updateAlgebra(a,b,c,valid);
+  validateAllRows();
+}
+
+/* ══════════════════════════════════════════════════
+   REGISTRO — VALIDATION
+══════════════════════════════════════════════════ */
+function getRowValues(row) {
+  const inputs = document.querySelectorAll(`.reg-input[data-row="${row}"]`);
+  return [...inputs].map(i => parseInt(i.value)||0);
+}
+
+function validateRow(row) {
+  const [a,b,c] = getRowValues(row);
+  const status  = document.getElementById('regStatus'+row);
+  if(!a||!b||!c){ status.textContent=''; return null; }
+
+  // Check right triangle using sorted sides
+  if(isRightTriangle(a,b,c)){
+    status.textContent='✔️'; return {a,b,c};
+  } else {
+    status.textContent='❌'; return false;
+  }
+}
+
+function validateAllRows() {
+  const results = [0,1,2].map(validateRow);
+  const allValid = results.every(r=>r && r!==false);
+
+  // Check no duplicates among valid rows
+  const keys = results.filter(r=>r).map(r=>triKey(r.a,r.b,r.c));
+  const uniqueKeys = new Set(keys);
+  const hasDups = keys.length !== uniqueKeys.size;
+
+  const btn = document.getElementById('confirmBtn');
+  btn.disabled = !(allValid && !hasDups);
+
+  // If duplicates exist, mark duplicate rows
+  if(hasDups && allValid) {
+    const seen = new Map();
+    results.forEach((r,i)=>{
+      if(!r) return;
+      const k=triKey(r.a,r.b,r.c);
+      if(seen.has(k)){
+        document.getElementById('regStatus'+i).textContent='🔁';
+        document.getElementById('regStatus'+seen.get(k)).textContent='🔁';
+      } else seen.set(k,i);
+    });
+  }
+  return { results, allValid, hasDups };
+}
+
+// Wire up all reg inputs
+document.querySelectorAll('.reg-input').forEach(input=>{
+  input.addEventListener('input', validateAllRows);
+});
+
+// "Usar actuales" buttons
+document.querySelectorAll('.reg-use-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const row = parseInt(btn.dataset.row);
+    const a=parseInt(slA.value), b=parseInt(slB.value), c=parseInt(slC.value);
+    const inputs=document.querySelectorAll(`.reg-input[data-row="${row}"]`);
+    inputs[0].value=a; inputs[1].value=b; inputs[2].value=c;
+    validateAllRows();
+  });
+});
+
+/* ══════════════════════════════════════════════════
+   CONFETTI
+══════════════════════════════════════════════════ */
+const confCanvas  = document.getElementById('confettiCanvas');
+const confCtx     = confCanvas.getContext('2d');
+let confParticles = [];
+let confAnim      = null;
+
+function launchConfetti() {
+  confCanvas.width  = window.innerWidth;
+  confCanvas.height = window.innerHeight;
+  confParticles = Array.from({length:120}, ()=>({
+    x: Math.random()*confCanvas.width,
+    y: -10 - Math.random()*40,
+    r: 4+Math.random()*5,
+    color: ['#60a5fa','#a78bfa','#f472b6','#34d399','#fbbf24','#f87171'][Math.floor(Math.random()*6)],
+    vx: (Math.random()-0.5)*3,
+    vy: 2+Math.random()*3,
+    angle: Math.random()*360,
+    spin: (Math.random()-0.5)*8,
+    life: 1,
+  }));
+  if(confAnim) cancelAnimationFrame(confAnim);
+  function tick() {
+    confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+    confParticles = confParticles.filter(p=>p.y<confCanvas.height+20 && p.life>0);
+    confParticles.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.angle+=p.spin; p.life-=0.008;
+      confCtx.save(); confCtx.translate(p.x,p.y); confCtx.rotate(p.angle*Math.PI/180);
+      confCtx.globalAlpha=Math.max(0,p.life);
+      confCtx.fillStyle=p.color;
+      confCtx.fillRect(-p.r/2,-p.r/2,p.r,p.r*1.6);
+      confCtx.restore();
+    });
+    if(confParticles.length>0) confAnim=requestAnimationFrame(tick);
+    else confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+  }
+  tick();
+}
+
+/* ══════════════════════════════════════════════════
+   CELEBRATION SCREEN
+══════════════════════════════════════════════════ */
+function showCelebration(results) {
+  document.getElementById('explorerView').style.display='none';
+  const screen=document.getElementById('celebrationScreen');
+  screen.style.display='flex';
+
+  results.forEach((r,i)=>{
+    const cel=document.getElementById('celCanvas'+i);
+    const box=cel.parentElement;
+    cel.width=box.clientWidth||240;
+    cel.height=box.clientHeight||200;
+    const c2d=cel.getContext('2d');
+    drawGrid(c2d,cel.width,cel.height);
+    const roles=getRoles(r.a,r.b,r.c);
+    drawTriangleOnCtx(c2d,r.a,r.b,r.c,cel.width,cel.height,roles.hyp.label,36);
+
+    // Label
+    const lbl=document.getElementById('celLabel'+i);
+    lbl.innerHTML=
+      `<span class="la">A=${r.a}</span> · `+
+      `<span class="lb">B=${r.b}</span> · `+
+      `<span class="lc">C=${r.c}</span><br>`+
+      `<span style="color:var(--text-muted);font-size:.72rem">`+
+      `${r.a}²+${r.b}²=${r.c}² &nbsp;✔</span>`;
   });
 
-  // Side labels — place mid-segment, offset outward
-  const lbl = (ax, ay, bx, by, txt, col) => {
-    const mx=(ax+bx)/2, my=(ay+by)/2;
-    const nx=-(by-ay), ny=(bx-ax), len=Math.sqrt(nx*nx+ny*ny)||1;
-    const off=20;
-    ctx.fillStyle=col;
-    ctx.font='bold 15px "Crimson Pro", serif';
-    ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(txt, mx+(nx/len)*off, my+(ny/len)*off);
-  };
-  lbl(P0.x, P0.y, P1.x, P1.y, 'C', COL.C);
-  lbl(P0.x, P0.y, P2.x, P2.y, 'B', COL.B);
-  lbl(P1.x, P1.y, P3.x, P3.y, 'A', COL.A);
+  launchConfetti();
 }
 
-/* ══════════════════════════════════════════════════════
-   UPDATE ALGEBRA PANEL
-══════════════════════════════════════════════════════ */
-function updateAlgebra(a, b, c, valid) {
-  const fLive     = document.getElementById('fLive');
-  const fExpanded = document.getElementById('fExpanded');
-  const badge     = document.getElementById('resultBadge');
+document.getElementById('celebBack').addEventListener('click',()=>{
+  document.getElementById('celebrationScreen').style.display='none';
+  document.getElementById('explorerView').style.display='grid';
+  if(confAnim) cancelAnimationFrame(confAnim);
+  confCtx.clearRect(0,0,confCanvas.width,confCanvas.height);
+  // Reset sliders and interaction state for a fresh start
+  slA.value=1; slB.value=1; slC.value=1;
+  hasInteracted=false;
+  overlay.classList.remove('hidden');
+  resizeCanvas();
+});
 
-  const a2 = a*a, b2 = b*b, c2 = c*c;
-  const sym = a2+b2 === c2 ? '=' : (a2+b2 > c2 ? '>' : '<');
+/* ══════════════════════════════════════════════════
+   CONFIRM BUTTON
+══════════════════════════════════════════════════ */
+document.getElementById('confirmBtn').addEventListener('click',()=>{
+  const { results, allValid, hasDups } = validateAllRows();
+  if(!allValid || hasDups) return;
+  // Build sorted results for celebration label
+  const sorted = results.map(r=>({
+    a:r.a, b:r.b, c:r.c
+  }));
+  showCelebration(sorted);
+});
 
-  fLive.innerHTML =
-    `<span class="fa">${a}<sup>2</sup></span> + ` +
-    `<span class="fb">${b}<sup>2</sup></span> = ` +
-    `<span class="fc">${c}<sup>2</sup></span>`;
-
-  fExpanded.innerHTML =
-    `<span class="na">${a2}</span> + ` +
-    `<span class="nb">${b2}</span> ` +
-    `<span style="color:var(--text-muted)">${sym}</span> ` +
-    `<span class="nc">${c2}</span>`;
-
-  if (!valid) {
-    badge.className = 'result-badge gray';
-    badge.innerHTML = `<span class="icon">⚠️</span><span>Triángulo no construible</span>`;
-    return;
-  }
-
-  if (a2 + b2 === c2) {
-    badge.className = 'result-badge green';
-    badge.innerHTML = `<span class="icon">✔️</span><span>¡Es un Triángulo Rectángulo!</span>`;
-  } else {
-    badge.className = 'result-badge red';
-    badge.innerHTML = `<span class="icon">❌</span><span>No es un Triángulo Rectángulo</span>`;
-  }
-}
-
-/* ══════════════════════════════════════════════════════
-   MAIN UPDATE
-══════════════════════════════════════════════════════ */
-function update() {
-  const a = parseInt(slA.value);
-  const b = parseInt(slB.value);
-  const c = parseInt(slC.value);
-
-  document.getElementById('vA').textContent = a;
-  document.getElementById('vB').textContent = b;
-  document.getElementById('vC').textContent = c;
-
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
-  drawGrid();
-
-  const valid = isTriangle(a, b, c);
-
-  if (valid) {
-    // Compute bounding box of the triangle to center it with generous margin
-    const ang_A = Math.acos(Math.max(-1, Math.min(1, (b*b + c*c - a*a) / (2*b*c))));
-    const margin = 64;
-    const scaleX = (W - margin * 2) / Math.max(c, b * Math.cos(ang_A));
-    const scaleY = (H - margin * 2) / (b * Math.sin(ang_A));
-    const scale  = Math.min(scaleX, scaleY, (Math.min(W,H) - margin*2) / Math.max(a,b,c));
-
-    const triW = Math.max(c * scale, b * Math.cos(ang_A) * scale);
-    const triH = b * Math.sin(ang_A) * scale;
-    const ox = (W - triW) / 2;
-    const oy = (H - triH) / 2 + triH;
-
-    drawTriangle(a, b, c, scale, ox, oy);
-  } else {
-    drawOpenChain(a, b, c, 1, W, H);
-  }
-
-  updateAlgebra(a, b, c, valid);
-}
-
-/* ══════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════
    INIT
-══════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════ */
 window.addEventListener('load', resizeCanvas);
 </script>
 </body>

@@ -16,11 +16,8 @@
     --border:    #2a3050;
     --text:      #e8eaf2;
     --text-muted:#7a82a8;
-    --accent:    #6c8fff;
-    --accent2:   #a78bfa;
     --green:     #34d399;
     --red:       #f87171;
-    --yellow:    #fbbf24;
     --sideA:     #60a5fa;
     --sideB:     #a78bfa;
     --sideC:     #f472b6;
@@ -36,44 +33,39 @@
   }
 
   header {
-    padding: 1.25rem 2rem;
+    padding: 1rem 2rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: baseline;
     gap: 1rem;
     background: var(--surface);
   }
-
   header h1 {
     font-family: 'Crimson Pro', serif;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     font-weight: 600;
-    letter-spacing: -0.01em;
     color: var(--text);
   }
-
   header span {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
-    font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
 
   .main {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
+    grid-template-columns: 3fr 2fr;   /* left column gets more space */
     flex: 1;
   }
 
-  /* LEFT COLUMN */
+  /* ── LEFT ── */
   .col-left {
     border-right: 1px solid var(--border);
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
-    gap: 1.5rem;
+    padding: 1.25rem 1.25rem 1rem;
+    gap: 1rem;
   }
 
   .canvas-wrap {
@@ -83,59 +75,26 @@
     border-radius: 12px;
     overflow: hidden;
     flex: 1;
-    min-height: 340px;
+    min-height: 400px;
   }
-
   #triCanvas {
     display: block;
     width: 100%;
     height: 100%;
   }
 
-  .no-tri-msg {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .25s;
-  }
-  .no-tri-msg.visible { opacity: 1; }
-  .no-tri-msg strong {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: var(--red);
-    text-align: center;
-    padding: 0 1rem;
-    text-shadow: 0 0 20px rgba(248,113,113,.4);
-  }
-  .no-tri-msg p {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-top: .4rem;
-    text-align: center;
-  }
-
   /* SLIDERS */
-  .controls {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
+  .controls { display: flex; flex-direction: column; gap: .85rem; }
 
   .slider-row {
     display: grid;
-    grid-template-columns: 22px 1fr 44px;
+    grid-template-columns: 24px 1fr 44px;
     align-items: center;
     gap: .75rem;
   }
-
   .side-label {
     font-family: 'Crimson Pro', serif;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     font-weight: 600;
     text-align: center;
   }
@@ -156,10 +115,9 @@
   input[type=range].A { accent-color: var(--sideA); }
   input[type=range].B { accent-color: var(--sideB); }
   input[type=range].C { accent-color: var(--sideC); }
-
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 18px; height: 18px;
+    width: 20px; height: 20px;
     border-radius: 50%;
     border: 2px solid var(--bg);
     cursor: pointer;
@@ -170,24 +128,24 @@
 
   .val-badge {
     font-family: 'JetBrains Mono', monospace;
-    font-size: .85rem;
+    font-size: .9rem;
     font-weight: 600;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: 6px;
     text-align: center;
-    padding: .2rem .3rem;
+    padding: .25rem .3rem;
   }
   .val-badge.A { color: var(--sideA); }
   .val-badge.B { color: var(--sideB); }
   .val-badge.C { color: var(--sideC); }
 
-  /* RIGHT COLUMN */
+  /* ── RIGHT ── */
   .col-right {
     display: flex;
     flex-direction: column;
-    padding: 1.5rem;
-    gap: 1.5rem;
+    padding: 1.25rem;
+    gap: 1.25rem;
   }
 
   .panel {
@@ -196,9 +154,8 @@
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
   }
-
   .panel-title {
-    font-size: .68rem;
+    font-size: .65rem;
     text-transform: uppercase;
     letter-spacing: .1em;
     color: var(--text-muted);
@@ -208,21 +165,20 @@
 
   .formula {
     font-family: 'Crimson Pro', serif;
-    font-size: 1.55rem;
+    font-size: 1.7rem;
     font-weight: 600;
     color: var(--text-muted);
     text-align: center;
-    padding: .5rem 0;
+    padding: .4rem 0;
   }
   .formula sup { font-size: .7em; }
 
   .formula-live {
     font-family: 'Crimson Pro', serif;
-    font-size: 1.5rem;
+    font-size: 1.55rem;
     font-weight: 600;
     text-align: center;
-    padding: .4rem 0;
-    transition: color .3s;
+    padding: .35rem 0;
   }
   .formula-live sup { font-size: .7em; }
   .formula-live .fa { color: var(--sideA); }
@@ -231,10 +187,9 @@
 
   .formula-expanded {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     text-align: center;
-    padding: .4rem 0;
-    transition: color .3s;
+    padding: .35rem 0;
   }
   .formula-expanded .na { color: var(--sideA); }
   .formula-expanded .nb { color: var(--sideB); }
@@ -243,7 +198,7 @@
   .divider {
     border: none;
     border-top: 1px solid var(--border);
-    margin: .7rem 0;
+    margin: .65rem 0;
   }
 
   /* RESULT BADGE */
@@ -252,16 +207,16 @@
     align-items: center;
     justify-content: center;
     gap: .6rem;
-    padding: .9rem 1rem;
+    padding: 1rem 1rem;
     border-radius: 10px;
     font-weight: 700;
-    font-size: 1rem;
+    font-size: 1.05rem;
     border: 1.5px solid transparent;
-    transition: background .3s, border-color .3s, color .3s;
+    transition: background .25s, border-color .25s, color .25s;
     text-align: center;
   }
   .result-badge.green {
-    background: rgba(52,211,153,.08);
+    background: rgba(52,211,153,.1);
     border-color: var(--green);
     color: var(--green);
   }
@@ -271,84 +226,16 @@
     color: var(--red);
   }
   .result-badge.gray {
-    background: rgba(122,130,168,.06);
+    background: rgba(122,130,168,.05);
     border-color: var(--border);
     color: var(--text-muted);
   }
-  .result-badge .icon { font-size: 1.3rem; }
-
-  /* TRIANGLE TYPE */
-  .tri-type-panel {
-    display: flex;
-    align-items: center;
-    gap: .8rem;
-    padding: .85rem 1rem;
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    background: var(--surface2);
-    transition: opacity .3s;
-  }
-  .tri-type-panel.dimmed { opacity: .3; pointer-events: none; }
-  .tri-type-dot {
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .tri-type-label {
-    font-size: .72rem;
-    text-transform: uppercase;
-    letter-spacing: .08em;
-    color: var(--text-muted);
-    font-weight: 600;
-  }
-  .tri-type-name {
-    font-family: 'Crimson Pro', serif;
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  /* DESIGUALDAD INFO */
-  .ineq-panel {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: .85rem 1rem;
-  }
-  .ineq-title {
-    font-size: .68rem;
-    text-transform: uppercase;
-    letter-spacing: .09em;
-    color: var(--text-muted);
-    font-weight: 600;
-    margin-bottom: .6rem;
-  }
-  .ineq-rows {
-    display: flex;
-    flex-direction: column;
-    gap: .3rem;
-  }
-  .ineq-row {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: .78rem;
-  }
-  .ineq-row .dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .ineq-row.ok .dot { background: var(--green); }
-  .ineq-row.fail .dot { background: var(--red); }
-  .ineq-row.ok span { color: var(--text); }
-  .ineq-row.fail span { color: var(--red); }
+  .result-badge .icon { font-size: 1.4rem; }
 
   footer {
-    padding: .7rem 2rem;
+    padding: .6rem 2rem;
     border-top: 1px solid var(--border);
-    font-size: .72rem;
+    font-size: .7rem;
     color: var(--text-muted);
     text-align: center;
   }
@@ -372,75 +259,44 @@
   <div class="col-left">
     <div class="canvas-wrap">
       <canvas id="triCanvas"></canvas>
-      <div class="no-tri-msg" id="noTriMsg">
-        <strong>Triángulo no construible</strong>
-        <p>Los lados no satisfacen la desigualdad triangular</p>
-      </div>
     </div>
 
     <div class="controls">
-      <!-- A -->
       <div class="slider-row">
         <span class="side-label A">A</span>
         <input type="range" id="slA" class="A" min="1" max="20" step="1" value="3">
         <span class="val-badge A" id="vA">3</span>
       </div>
-      <!-- B -->
       <div class="slider-row">
         <span class="side-label B">B</span>
         <input type="range" id="slB" class="B" min="1" max="20" step="1" value="4">
         <span class="val-badge B" id="vB">4</span>
       </div>
-      <!-- C -->
       <div class="slider-row">
         <span class="side-label C">C</span>
         <input type="range" id="slC" class="C" min="1" max="20" step="1" value="5">
         <span class="val-badge C" id="vC">5</span>
       </div>
     </div>
-
-    <!-- Desigualdad triangular -->
-    <div class="ineq-panel">
-      <div class="ineq-title">Desigualdad Triangular</div>
-      <div class="ineq-rows" id="ineqRows"></div>
-    </div>
   </div>
 
   <!-- ═══════════════ RIGHT ═══════════════ -->
   <div class="col-right">
 
-    <!-- Fórmula base estática -->
     <div class="panel">
       <div class="panel-title">Teorema de Pitágoras</div>
-      <div class="formula">
-        A<sup>2</sup> + B<sup>2</sup> = C<sup>2</sup>
-      </div>
+      <div class="formula">A<sup>2</sup> + B<sup>2</sup> = C<sup>2</sup></div>
     </div>
 
-    <!-- Sustitución dinámica -->
-    <div class="panel" id="algPanel">
+    <div class="panel">
       <div class="panel-title">Sustitución numérica</div>
-
-      <!-- Exponentes -->
       <div class="formula-live" id="fLive"></div>
       <hr class="divider">
-      <!-- Valores calculados -->
       <div class="formula-expanded" id="fExpanded"></div>
       <hr class="divider">
-
-      <!-- Badge resultado -->
       <div class="result-badge gray" id="resultBadge">
         <span class="icon">—</span>
-        <span id="resultText">Sin datos</span>
-      </div>
-    </div>
-
-    <!-- Tipo de triángulo -->
-    <div class="tri-type-panel dimmed" id="triTypePanel">
-      <div class="tri-type-dot" id="triTypeDot" style="background: var(--text-muted)"></div>
-      <div>
-        <div class="tri-type-label">Tipo según ángulos</div>
-        <div class="tri-type-name" id="triTypeName">—</div>
+        <span id="resultText"></span>
       </div>
     </div>
 
@@ -448,11 +304,13 @@
 </div>
 
 <footer>
-  Modifica los deslizadores y descubre cuándo se cumple A² + B² = C²
+  Mueve los deslizadores y descubre cuándo se cumple A² + B² = C²
 </footer>
 
 <script>
-/* ─── CANVAS SETUP ───────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   CANVAS
+══════════════════════════════════════════════════════ */
 const canvas = document.getElementById('triCanvas');
 const ctx    = canvas.getContext('2d');
 
@@ -464,49 +322,51 @@ function resizeCanvas() {
 }
 window.addEventListener('resize', resizeCanvas);
 
-/* ─── CONTROLS ───────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════════════════════ */
 const slA = document.getElementById('slA');
 const slB = document.getElementById('slB');
 const slC = document.getElementById('slC');
-const vA  = document.getElementById('vA');
-const vB  = document.getElementById('vB');
-const vC  = document.getElementById('vC');
-
 [slA, slB, slC].forEach(s => s.addEventListener('input', update));
 
-/* ─── COLORS ─────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   PALETTE
+══════════════════════════════════════════════════════ */
 const COL = {
-  A: '#60a5fa',
-  B: '#a78bfa',
-  C: '#f472b6',
+  A:     '#60a5fa',
+  B:     '#a78bfa',
+  C:     '#f472b6',
   angle: '#e8eaf2',
   right: '#fbbf24',
-  bg: '#181c27',
-  grid: '#2a3050'
+  grid:  '#1e2336',
+  gap:   '#f87171',   // colour for the "gap" line when triangle fails
 };
 
-/* ─── HELPERS ────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   MATH HELPERS
+══════════════════════════════════════════════════════ */
 function deg(r) { return r * 180 / Math.PI; }
-function rad(d) { return d * Math.PI / 180; }
 
 function isTriangle(a, b, c) {
   return a + b > c && a + c > b && b + c > a;
 }
 
 function computeAngles(a, b, c) {
-  // Law of cosines: angle opposite to side c = C_angle
-  const C_ang = Math.acos((a*a + b*b - c*c) / (2*a*b));
-  const A_ang = Math.acos((b*b + c*c - a*a) / (2*b*c));
-  const B_ang = Math.PI - A_ang - C_ang;
-  return { A: A_ang, B: B_ang, C: C_ang };
+  const A = Math.acos(Math.max(-1, Math.min(1, (b*b + c*c - a*a) / (2*b*c))));
+  const B = Math.acos(Math.max(-1, Math.min(1, (a*a + c*c - b*b) / (2*a*c))));
+  const C = Math.PI - A - B;
+  return { A, B, C };
 }
 
-/* ─── DRAW ───────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   GRID
+══════════════════════════════════════════════════════ */
 function drawGrid() {
   const W = canvas.width, H = canvas.height;
   ctx.strokeStyle = COL.grid;
   ctx.lineWidth = 0.5;
-  const step = 30;
+  const step = 28;
   for (let x = 0; x < W; x += step) {
     ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
   }
@@ -515,225 +375,251 @@ function drawGrid() {
   }
 }
 
-function drawAngleArc(cx, cy, fromAng, toAng, r, color, isRight) {
-  if (isRight) {
-    // Draw square symbol
-    const mid = (fromAng + toAng) / 2;
-    const sz  = r * 0.6;
-    const dx1 = Math.cos(fromAng) * sz;
-    const dy1 = Math.sin(fromAng) * sz;
-    const dx2 = Math.cos(toAng) * sz;
-    const dy2 = Math.sin(toAng) * sz;
-    const mx  = dx1 + dx2;
-    const my  = dy1 + dy2;
-    ctx.strokeStyle = COL.right;
-    ctx.lineWidth   = 1.5;
-    ctx.beginPath();
-    ctx.moveTo(cx + dx1, cy + dy1);
-    ctx.lineTo(cx + mx,  cy + my);
-    ctx.lineTo(cx + dx2, cy + dy2);
-    ctx.stroke();
-  } else {
-    ctx.strokeStyle = color;
-    ctx.lineWidth   = 1.5;
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, fromAng, toAng, false);
-    ctx.stroke();
-  }
-}
-
-function angleLabelPos(cx, cy, fromAng, toAng, r) {
-  const mid = (fromAng + toAng) / 2;
-  return {
-    x: cx + Math.cos(mid) * r * 1.8,
-    y: cy + Math.sin(mid) * r * 1.8
-  };
-}
-
-function drawSideLabel(x1, y1, x2, y2, label, color) {
-  const mx = (x1 + x2) / 2;
-  const my = (y1 + y2) / 2;
-  const nx = -(y2 - y1);
-  const ny =  (x2 - x1);
-  const len = Math.sqrt(nx*nx + ny*ny) || 1;
-  const off = 18;
-  ctx.fillStyle = color;
-  ctx.font = 'bold 13px "Crimson Pro", serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(label, mx + (nx/len)*off, my + (ny/len)*off);
-}
-
-// Returns [from, to] such that the arc sweeps the interior angle (< π)
+/* ══════════════════════════════════════════════════════
+   ANGLE ARC / RIGHT-ANGLE SQUARE
+══════════════════════════════════════════════════════ */
 function sortAngles(d1, d2) {
   let from = d1, to = d2;
   if (from > to) [from, to] = [to, from];
-  // If the span > π, the short arc is on the other side; wrap around
   if (to - from > Math.PI) {
     const span = 2 * Math.PI - (to - from);
-    from = to;
-    to   = from + span;
+    const newFrom = to;
+    return [newFrom, newFrom + span];
   }
   return [from, to];
 }
 
+function angleLabelPos(cx, cy, from, to, r) {
+  const mid = (from + to) / 2;
+  return { x: cx + Math.cos(mid) * r * 2.0, y: cy + Math.sin(mid) * r * 2.0 };
+}
+
+function drawAngleArc(cx, cy, from, to, r, isRight) {
+  if (isRight) {
+    const sz  = r * 0.72;
+    const dx1 = Math.cos(from) * sz, dy1 = Math.sin(from) * sz;
+    const dx2 = Math.cos(to)   * sz, dy2 = Math.sin(to)   * sz;
+    ctx.strokeStyle = COL.right;
+    ctx.lineWidth   = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx + dx1, cy + dy1);
+    ctx.lineTo(cx + dx1 + dx2, cy + dy1 + dy2);
+    ctx.lineTo(cx + dx2, cy + dy2);
+    ctx.stroke();
+  } else {
+    ctx.strokeStyle = COL.angle;
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, from, to, false);
+    ctx.stroke();
+  }
+}
+
+/* ══════════════════════════════════════════════════════
+   SIDE LABEL (offset perpendicularly outward from centroid)
+══════════════════════════════════════════════════════ */
+function drawSideLabel(x1, y1, x2, y2, label, color, cx, cy) {
+  // Midpoint of the side
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+  // Perpendicular to the side (one of two directions)
+  let nx = -(y2 - y1), ny = (x2 - x1);
+  const len = Math.sqrt(nx*nx + ny*ny) || 1;
+  nx /= len; ny /= len;
+  // Ensure normal points AWAY from centroid
+  const toCx = cx - mx, toCy = cy - my;
+  if (nx * toCx + ny * toCy > 0) { nx = -nx; ny = -ny; }
+  const off = 22;
+  ctx.fillStyle = color;
+  ctx.font = `bold 17px 'Crimson Pro', serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, mx + nx * off, my + ny * off);
+}
+
+/* ══════════════════════════════════════════════════════
+   DRAW VALID TRIANGLE
+══════════════════════════════════════════════════════ */
 function drawTriangle(a, b, c, scale, ox, oy) {
-  // Convention (standard):
-  //   Angle A is at vertex PA, opposite side a
-  //   Angle B is at vertex PB, opposite side b
-  //   Angle C is at vertex PC, opposite side c  ← C is the hypotenuse candidate
-  //
-  // Construction:
-  //   PA = left base corner,  PB = right base corner,  PC = top apex
-  //   Base PA–PB has length c  (side c, opposite angle C at apex PC)
-  //   From PA upward with length b  (side b, opposite angle B at PB)
-  //   Angle at PA = angle_A
-
   const angs = computeAngles(a, b, c);
-  const ang_A = angs.A; // angle at PA, between sides b (PA–PC) and c (PA–PB)
+  const ang_A = angs.A;
 
-  const PA = { x: ox,                y: oy };
-  const PB = { x: ox + c * scale,    y: oy };
-  // PC is reached from PA along side b, at angle_A above the base
-  const PC = {
-    x: ox + b * Math.cos(ang_A) * scale,
-    y: oy - b * Math.sin(ang_A) * scale
-  };
+  // Vertices
+  // PA = left base, PB = right base, PC = apex
+  // Base PA–PB = side c;  PA–PC = side b;  PB–PC = side a
+  // Angle at PA = A, at PB = B, at PC = C
+  const PA = { x: ox,                               y: oy };
+  const PB = { x: ox + c * scale,                   y: oy };
+  const PC = { x: ox + b * Math.cos(ang_A) * scale, y: oy - b * Math.sin(ang_A) * scale };
 
   // Fill
   ctx.beginPath();
-  ctx.moveTo(PA.x, PA.y);
-  ctx.lineTo(PB.x, PB.y);
-  ctx.lineTo(PC.x, PC.y);
+  ctx.moveTo(PA.x, PA.y); ctx.lineTo(PB.x, PB.y); ctx.lineTo(PC.x, PC.y);
   ctx.closePath();
-  ctx.fillStyle = 'rgba(108,143,255,0.05)';
+  ctx.fillStyle = 'rgba(108,143,255,0.06)';
   ctx.fill();
 
   // Sides
-  const drawSide = (ax, ay, bx, by, col) => {
-    ctx.strokeStyle = col;
-    ctx.lineWidth   = 2.5;
-    ctx.lineCap     = 'round';
-    ctx.beginPath();
-    ctx.moveTo(ax, ay);
-    ctx.lineTo(bx, by);
-    ctx.stroke();
+  const side = (ax, ay, bx, by, col) => {
+    ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
   };
+  side(PB.x, PB.y, PC.x, PC.y, COL.A);   // side a  (opposite A at PA)
+  side(PA.x, PA.y, PC.x, PC.y, COL.B);   // side b  (opposite B at PB)
+  side(PA.x, PA.y, PB.x, PB.y, COL.C);   // side c  (opposite C at PC — hyp candidate)
 
-  // side a = PB–PC  (opposite angle A at PA)
-  drawSide(PB.x, PB.y, PC.x, PC.y, COL.A);
-  // side b = PA–PC  (opposite angle B at PB)
-  drawSide(PA.x, PA.y, PC.x, PC.y, COL.B);
-  // side c = PA–PB  (opposite angle C at PC — the hypotenuse candidate)
-  drawSide(PA.x, PA.y, PB.x, PB.y, COL.C);
+  // Side labels — pass centroid so normal always points outward
+  const centX = (PA.x + PB.x + PC.x) / 3;
+  const centY = (PA.y + PB.y + PC.y) / 3;
+  drawSideLabel(PB.x, PB.y, PC.x, PC.y, 'A', COL.A, centX, centY);
+  drawSideLabel(PA.x, PA.y, PC.x, PC.y, 'B', COL.B, centX, centY);
+  drawSideLabel(PA.x, PA.y, PB.x, PB.y, 'C', COL.C, centX, centY);
 
-  // Labels on sides
-  drawSideLabel(PB.x, PB.y, PC.x, PC.y, 'A', COL.A);
-  drawSideLabel(PA.x, PA.y, PC.x, PC.y, 'B', COL.B);
-  drawSideLabel(PA.x, PA.y, PB.x, PB.y, 'C', COL.C);
+  // Angle arcs — radius capped to a fraction of the SHORTEST side in pixels
+  const shortestPx = Math.min(
+    Math.hypot(PB.x-PC.x, PB.y-PC.y),   // side a
+    Math.hypot(PA.x-PC.x, PA.y-PC.y),   // side b
+    Math.hypot(PA.x-PB.x, PA.y-PB.y)    // side c
+  );
+  const ARC_R = Math.min(shortestPx * 0.22, 28);
+  ctx.font = `12px Inter, sans-serif`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
 
-  const ARC_R = Math.min(c * scale * 0.18, 28);
-  ctx.font = '11px Inter, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // ── Angle A at vertex PA (between sides b=PA–PC and c=PA–PB) ──
+  // Angle A at PA
   const ang_A_deg = Math.round(deg(angs.A));
-  const dirA1 = Math.atan2(PB.y - PA.y, PB.x - PA.x); // toward PB
-  const dirA2 = Math.atan2(PC.y - PA.y, PC.x - PA.x); // toward PC
-  const [fromA, toA] = sortAngles(dirA1, dirA2);
-  drawAngleArc(PA.x, PA.y, fromA, toA, ARC_R, COL.angle, Math.abs(ang_A_deg - 90) < 1);
+  const [fromA, toA] = sortAngles(
+    Math.atan2(PB.y - PA.y, PB.x - PA.x),
+    Math.atan2(PC.y - PA.y, PC.x - PA.x)
+  );
+  const isRightA = Math.abs(ang_A_deg - 90) < 1;
+  drawAngleArc(PA.x, PA.y, fromA, toA, ARC_R, isRightA);
   const lA = angleLabelPos(PA.x, PA.y, fromA, toA, ARC_R);
-  ctx.fillStyle = Math.abs(ang_A_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillStyle = isRightA ? COL.right : COL.angle;
   ctx.fillText(ang_A_deg + '°', lA.x, lA.y);
 
-  // ── Angle B at vertex PB (between sides a=PB–PC and c=PB–PA) ──
+  // Angle B at PB
   const ang_B_deg = Math.round(deg(angs.B));
-  const dirB1 = Math.atan2(PA.y - PB.y, PA.x - PB.x); // toward PA
-  const dirB2 = Math.atan2(PC.y - PB.y, PC.x - PB.x); // toward PC
-  const [fromB, toB] = sortAngles(dirB1, dirB2);
-  drawAngleArc(PB.x, PB.y, fromB, toB, ARC_R, COL.angle, Math.abs(ang_B_deg - 90) < 1);
+  const [fromB, toB] = sortAngles(
+    Math.atan2(PA.y - PB.y, PA.x - PB.x),
+    Math.atan2(PC.y - PB.y, PC.x - PB.x)
+  );
+  const isRightB = Math.abs(ang_B_deg - 90) < 1;
+  drawAngleArc(PB.x, PB.y, fromB, toB, ARC_R, isRightB);
   const lB = angleLabelPos(PB.x, PB.y, fromB, toB, ARC_R);
-  ctx.fillStyle = Math.abs(ang_B_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillStyle = isRightB ? COL.right : COL.angle;
   ctx.fillText(ang_B_deg + '°', lB.x, lB.y);
 
-  // ── Angle C at vertex PC (between sides a=PC–PB and b=PC–PA) ──
+  // Angle C at PC
   const ang_C_deg = Math.round(deg(angs.C));
-  const dirC1 = Math.atan2(PA.y - PC.y, PA.x - PC.x); // toward PA
-  const dirC2 = Math.atan2(PB.y - PC.y, PB.x - PC.x); // toward PB
-  const [fromC, toC] = sortAngles(dirC1, dirC2);
-  drawAngleArc(PC.x, PC.y, fromC, toC, ARC_R, COL.angle, Math.abs(ang_C_deg - 90) < 1);
+  const [fromC, toC] = sortAngles(
+    Math.atan2(PA.y - PC.y, PA.x - PC.x),
+    Math.atan2(PB.y - PC.y, PB.x - PC.x)
+  );
+  const isRightC = Math.abs(ang_C_deg - 90) < 1;
+  drawAngleArc(PC.x, PC.y, fromC, toC, ARC_R, isRightC);
   const lC = angleLabelPos(PC.x, PC.y, fromC, toC, ARC_R);
-  ctx.fillStyle = Math.abs(ang_C_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillStyle = isRightC ? COL.right : COL.angle;
   ctx.fillText(ang_C_deg + '°', lC.x, lC.y);
 
   // Vertex dots
   [PA, PB, PC].forEach(p => {
-    ctx.beginPath();
-    ctx.arc(p.x, p.y, 3.5, 0, 2*Math.PI);
-    ctx.fillStyle = COL.angle;
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, 2*Math.PI);
+    ctx.fillStyle = COL.angle; ctx.fill();
   });
 }
 
+/* ══════════════════════════════════════════════════════
+   DRAW OPEN CHAIN (invalid triangle)
+   Strategy: place A and B as two sides from a shared
+   corner, then draw C starting from the end of B — 
+   if C is too short or too long to close, the gap
+   (or overshoot) is shown in red with a dashed line.
+══════════════════════════════════════════════════════ */
+function drawOpenChain(a, b, c, scale, W, H) {
+  // We'll lay out the chain along the bottom:
+  // P0 = pivot (left), P1 = end of side B, P2 = end of side A from P0
+  // Then C must connect P1 to P2 — show how it falls short or overshoots.
 
-function drawBrokenSegments(a, b, c, scale, W, H) {
-  // Show 3 disconnected segments as "fallen"
-  const segs = [
-    { len: a * scale, col: COL.A, label: 'A', y: H * 0.38 },
-    { len: b * scale, col: COL.B, label: 'B', y: H * 0.58 },
-    { len: c * scale, col: COL.C, label: 'C', y: H * 0.78 },
-  ];
-  segs.forEach(s => {
-    const x0 = (W - s.len) / 2;
-    const x1 = x0 + s.len;
-    ctx.strokeStyle = s.col;
-    ctx.lineWidth   = 2.5;
-    ctx.lineCap     = 'round';
-    ctx.setLineDash([6, 4]);
-    ctx.beginPath();
-    ctx.moveTo(x0, s.y);
-    ctx.lineTo(x1, s.y);
-    ctx.stroke();
+  // Use a fixed angle of ~55° between A and B so the chain looks like
+  // an "almost triangle" — visually intuitive.
+  const fixedAngle = Math.PI * 0.55;   // ~100° opening so sides spread apart
+
+  const margin = 60;
+  const maxSide = Math.max(a, b, c);
+  const sc = (Math.min(W, H) - margin * 2) / maxSide;
+
+  // Anchor at bottom-left area
+  const P0 = { x: W * 0.18, y: H * 0.72 };
+  // Side C along the base from P0
+  const P1 = { x: P0.x + c * sc, y: P0.y };
+  // Side B going up-right at fixedAngle from P0
+  const P2 = { x: P0.x + b * sc * Math.cos(fixedAngle),
+                y: P0.y - b * sc * Math.sin(fixedAngle) };
+  // Side A must start from P1 and go toward P2 direction
+  // Direction from P1 toward P2
+  const dx = P2.x - P1.x, dy = P2.y - P1.y;
+  const dist = Math.sqrt(dx*dx + dy*dy);
+  const ux = dx/dist, uy = dy/dist;
+  // End of side A from P1 (may not reach P2)
+  const P3 = { x: P1.x + a * sc * ux, y: P1.y + a * sc * uy };
+
+  const side = (ax, ay, bx, by, col, dash) => {
+    ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    if (dash) ctx.setLineDash([8, 5]); else ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
     ctx.setLineDash([]);
+  };
 
-    ctx.fillStyle = s.col;
-    ctx.font = 'bold 13px "Crimson Pro", serif';
+  // Draw the three sides as a chain: C (base), B (from P0 up), A (from P1 toward P2)
+  side(P0.x, P0.y, P1.x, P1.y, COL.C, false);   // C: base
+  side(P0.x, P0.y, P2.x, P2.y, COL.B, false);   // B: upper-left arm
+  side(P1.x, P1.y, P3.x, P3.y, COL.A, false);   // A: from right end
+
+  // Gap (or overshoot) between P3 and P2 — dashed red
+  const gapDist = Math.sqrt((P3.x-P2.x)**2 + (P3.y-P2.y)**2);
+  if (gapDist > 2) {
+    side(P3.x, P3.y, P2.x, P2.y, COL.gap, true);
+    // Small gap label
+    ctx.fillStyle = COL.gap;
+    ctx.font = '12px Inter, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(s.label, x0 - 14, s.y);
+    const gx = (P3.x + P2.x)/2 + 12, gy = (P3.y + P2.y)/2 - 12;
+    ctx.fillText('no cierra', gx, gy);
+  }
+
+  // Endpoint dots
+  [P0, P1, P2, P3].forEach((p, i) => {
+    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, 2*Math.PI);
+    ctx.fillStyle = i === 2 ? '#a78bfa' : (i === 3 ? '#60a5fa' : COL.angle);
+    ctx.fill();
   });
+
+  // Side labels — place mid-segment, offset outward
+  const lbl = (ax, ay, bx, by, txt, col) => {
+    const mx=(ax+bx)/2, my=(ay+by)/2;
+    const nx=-(by-ay), ny=(bx-ax), len=Math.sqrt(nx*nx+ny*ny)||1;
+    const off=20;
+    ctx.fillStyle=col;
+    ctx.font='bold 15px "Crimson Pro", serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(txt, mx+(nx/len)*off, my+(ny/len)*off);
+  };
+  lbl(P0.x, P0.y, P1.x, P1.y, 'C', COL.C);
+  lbl(P0.x, P0.y, P2.x, P2.y, 'B', COL.B);
+  lbl(P1.x, P1.y, P3.x, P3.y, 'A', COL.A);
 }
 
-/* ─── UPDATE INEQUALITY UI ───────────────────────────────────────── */
-function updateIneq(a, b, c, valid) {
-  const ineqs = [
-    { expr: `${a} + ${b} > ${c}`, ok: a + b > c },
-    { expr: `${a} + ${c} > ${b}`, ok: a + c > b },
-    { expr: `${b} + ${c} > ${a}`, ok: b + c > a },
-  ];
-  const div = document.getElementById('ineqRows');
-  div.innerHTML = ineqs.map(r =>
-    `<div class="ineq-row ${r.ok ? 'ok' : 'fail'}">
-       <div class="dot"></div>
-       <span>${r.expr} &nbsp;${r.ok ? '✓' : '✗'}</span>
-     </div>`
-  ).join('');
-}
-
-/* ─── UPDATE ALGEBRA UI ──────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   UPDATE ALGEBRA PANEL
+══════════════════════════════════════════════════════ */
 function updateAlgebra(a, b, c, valid) {
   const fLive     = document.getElementById('fLive');
   const fExpanded = document.getElementById('fExpanded');
   const badge     = document.getElementById('resultBadge');
-  const resultTxt = document.getElementById('resultText');
-  const triPanel  = document.getElementById('triTypePanel');
-  const triDot    = document.getElementById('triTypeDot');
-  const triName   = document.getElementById('triTypeName');
 
   const a2 = a*a, b2 = b*b, c2 = c*c;
+  const sym = a2+b2 === c2 ? '=' : (a2+b2 > c2 ? '>' : '<');
 
-  // Substitution row
   fLive.innerHTML =
     `<span class="fa">${a}<sup>2</sup></span> + ` +
     `<span class="fb">${b}<sup>2</sup></span> = ` +
@@ -742,96 +628,67 @@ function updateAlgebra(a, b, c, valid) {
   fExpanded.innerHTML =
     `<span class="na">${a2}</span> + ` +
     `<span class="nb">${b2}</span> ` +
-    `<span style="color:var(--text-muted)">${a2+b2 === c2 ? '=' : (a2+b2 > c2 ? '>' : '<')}</span> ` +
+    `<span style="color:var(--text-muted)">${sym}</span> ` +
     `<span class="nc">${c2}</span>`;
 
   if (!valid) {
-    badge.className    = 'result-badge gray';
-    badge.innerHTML    = `<span class="icon">—</span><span>Triángulo no construible</span>`;
-    triPanel.className = 'tri-type-panel dimmed';
-    triName.textContent = '—';
-    triDot.style.background = 'var(--text-muted)';
+    badge.className = 'result-badge gray';
+    badge.innerHTML = `<span class="icon">⚠️</span><span>Triángulo no construible</span>`;
     return;
   }
 
-  // Check Pythagoras
-  const isRight = (a2 + b2 === c2);
-  // Angle opposite C
-  const angC_rad = Math.acos((a2 + b2 - c2) / (2*a*b));
-  const angC_deg = deg(angC_rad);
-
-  if (isRight) {
+  if (a2 + b2 === c2) {
     badge.className = 'result-badge green';
-    badge.innerHTML = `<span class="icon">✔️</span><span>Triángulo Rectángulo — ¡Pitágoras se cumple!</span>`;
-    triPanel.className = 'tri-type-panel';
-    triName.textContent = 'Rectángulo';
-    triDot.style.background = 'var(--green)';
+    badge.innerHTML = `<span class="icon">✔️</span><span>¡Es un Triángulo Rectángulo!</span>`;
   } else {
     badge.className = 'result-badge red';
-    badge.innerHTML = `<span class="icon">❌</span><span>No cumple A²+B²=C²</span>`;
-    // Determine acute vs obtuse
-    const isObtuse = angC_deg > 90;
-    triPanel.className = 'tri-type-panel';
-    if (isObtuse) {
-      triName.textContent = 'Obtusángulo';
-      triDot.style.background = 'var(--red)';
-    } else {
-      triName.textContent = 'Acutángulo';
-      triDot.style.background = 'var(--yellow)';
-    }
+    badge.innerHTML = `<span class="icon">❌</span><span>No es un Triángulo Rectángulo</span>`;
   }
 }
 
-/* ─── MAIN UPDATE ────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════
+   MAIN UPDATE
+══════════════════════════════════════════════════════ */
 function update() {
   const a = parseInt(slA.value);
   const b = parseInt(slB.value);
   const c = parseInt(slC.value);
 
-  vA.textContent = a;
-  vB.textContent = b;
-  vC.textContent = c;
+  document.getElementById('vA').textContent = a;
+  document.getElementById('vB').textContent = b;
+  document.getElementById('vC').textContent = c;
 
-  const W = canvas.width;
-  const H = canvas.height;
-
+  const W = canvas.width, H = canvas.height;
   ctx.clearRect(0, 0, W, H);
   drawGrid();
 
   const valid = isTriangle(a, b, c);
-  const msg   = document.getElementById('noTriMsg');
-
-  const margin = 60;
-  const maxSide = Math.max(a, b, c);
-  const scale   = (Math.min(W, H) - margin * 2) / maxSide;
 
   if (valid) {
-    msg.classList.remove('visible');
+    // Compute bounding box of the triangle to center it with generous margin
+    const ang_A = Math.acos(Math.max(-1, Math.min(1, (b*b + c*c - a*a) / (2*b*c))));
+    const margin = 64;
+    const scaleX = (W - margin * 2) / Math.max(c, b * Math.cos(ang_A));
+    const scaleY = (H - margin * 2) / (b * Math.sin(ang_A));
+    const scale  = Math.min(scaleX, scaleY, (Math.min(W,H) - margin*2) / Math.max(a,b,c));
 
-    // Center the triangle
-    // PA at (ox, oy), PB at (ox + c*scale, oy), PC at (ox + b*cos(A)*scale, oy - b*sin(A)*scale)
-    const ang_A = Math.acos((b*b + c*c - a*a) / (2*b*c));
-    const pcx = b * Math.cos(ang_A) * scale; // PC x relative to PA
-    const pcy = b * Math.sin(ang_A) * scale; // PC height above base
-    const triW = Math.max(c * scale, pcx);
-    const triH = pcy;
+    const triW = Math.max(c * scale, b * Math.cos(ang_A) * scale);
+    const triH = b * Math.sin(ang_A) * scale;
     const ox = (W - triW) / 2;
     const oy = (H - triH) / 2 + triH;
 
     drawTriangle(a, b, c, scale, ox, oy);
   } else {
-    msg.classList.add('visible');
-    drawBrokenSegments(a, b, c, scale, W, H);
+    drawOpenChain(a, b, c, 1, W, H);
   }
 
-  updateIneq(a, b, c, valid);
   updateAlgebra(a, b, c, valid);
 }
 
-/* ─── INIT ───────────────────────────────────────────────────────── */
-window.addEventListener('load', () => {
-  resizeCanvas();
-});
+/* ══════════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════════ */
+window.addEventListener('load', resizeCanvas);
 </script>
 </body>
 </html>

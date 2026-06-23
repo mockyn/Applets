@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teorema de Pitágoras — Explorador Interactivo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f1117;
+    --surface:   #181c27;
+    --surface2:  #1e2336;
+    --border:    #2a3050;
+    --text:      #e8eaf2;
+    --text-muted:#7a82a8;
+    --accent:    #6c8fff;
+    --accent2:   #a78bfa;
+    --green:     #34d399;
+    --red:       #f87171;
+    --yellow:    #fbbf24;
+    --sideA:     #60a5fa;
+    --sideB:     #a78bfa;
+    --sideC:     #f472b6;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    background: var(--surface);
+  }
+
+  header h1 {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  header span {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    flex: 1;
+  }
+
+  /* LEFT COLUMN */
+  .col-left {
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .canvas-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    flex: 1;
+    min-height: 340px;
+  }
+
+  #triCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .no-tri-msg {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .25s;
+  }
+  .no-tri-msg.visible { opacity: 1; }
+  .no-tri-msg strong {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--red);
+    text-align: center;
+    padding: 0 1rem;
+    text-shadow: 0 0 20px rgba(248,113,113,.4);
+  }
+  .no-tri-msg p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: .4rem;
+    text-align: center;
+  }
+
+  /* SLIDERS */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .slider-row {
+    display: grid;
+    grid-template-columns: 22px 1fr 44px;
+    align-items: center;
+    gap: .75rem;
+  }
+
+  .side-label {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-align: center;
+  }
+  .side-label.A { color: var(--sideA); }
+  .side-label.B { color: var(--sideB); }
+  .side-label.C { color: var(--sideC); }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+    background: var(--border);
+  }
+  input[type=range].A { accent-color: var(--sideA); }
+  input[type=range].B { accent-color: var(--sideB); }
+  input[type=range].C { accent-color: var(--sideC); }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    cursor: pointer;
+  }
+  input[type=range].A::-webkit-slider-thumb { background: var(--sideA); }
+  input[type=range].B::-webkit-slider-thumb { background: var(--sideB); }
+  input[type=range].C::-webkit-slider-thumb { background: var(--sideC); }
+
+  .val-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .85rem;
+    font-weight: 600;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-align: center;
+    padding: .2rem .3rem;
+  }
+  .val-badge.A { color: var(--sideA); }
+  .val-badge.B { color: var(--sideB); }
+  .val-badge.C { color: var(--sideC); }
+
+  /* RIGHT COLUMN */
+  .col-right {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .panel-title {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--text-muted);
+    margin-bottom: .9rem;
+    font-weight: 600;
+  }
+
+  .formula {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    padding: .5rem 0;
+  }
+  .formula sup { font-size: .7em; }
+
+  .formula-live {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    padding: .4rem 0;
+    transition: color .3s;
+  }
+  .formula-live sup { font-size: .7em; }
+  .formula-live .fa { color: var(--sideA); }
+  .formula-live .fb { color: var(--sideB); }
+  .formula-live .fc { color: var(--sideC); }
+
+  .formula-expanded {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: .4rem 0;
+    transition: color .3s;
+  }
+  .formula-expanded .na { color: var(--sideA); }
+  .formula-expanded .nb { color: var(--sideB); }
+  .formula-expanded .nc { color: var(--sideC); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: .7rem 0;
+  }
+
+  /* RESULT BADGE */
+  .result-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .6rem;
+    padding: .9rem 1rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 1rem;
+    border: 1.5px solid transparent;
+    transition: background .3s, border-color .3s, color .3s;
+    text-align: center;
+  }
+  .result-badge.green {
+    background: rgba(52,211,153,.08);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .result-badge.red {
+    background: rgba(248,113,113,.08);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .result-badge.gray {
+    background: rgba(122,130,168,.06);
+    border-color: var(--border);
+    color: var(--text-muted);
+  }
+  .result-badge .icon { font-size: 1.3rem; }
+
+  /* TRIANGLE TYPE */
+  .tri-type-panel {
+    display: flex;
+    align-items: center;
+    gap: .8rem;
+    padding: .85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    transition: opacity .3s;
+  }
+  .tri-type-panel.dimmed { opacity: .3; pointer-events: none; }
+  .tri-type-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tri-type-label {
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .tri-type-name {
+    font-family: 'Crimson Pro', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* DESIGUALDAD INFO */
+  .ineq-panel {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: .85rem 1rem;
+  }
+  .ineq-title {
+    font-size: .68rem;
+    text-transform: uppercase;
+    letter-spacing: .09em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-bottom: .6rem;
+  }
+  .ineq-rows {
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+  }
+  .ineq-row {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+  }
+  .ineq-row .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .ineq-row.ok .dot { background: var(--green); }
+  .ineq-row.fail .dot { background: var(--red); }
+  .ineq-row.ok span { color: var(--text); }
+  .ineq-row.fail span { color: var(--red); }
+
+  footer {
+    padding: .7rem 2rem;
+    border-top: 1px solid var(--border);
+    font-size: .72rem;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 780px) {
+    .main { grid-template-columns: 1fr; }
+    .col-left { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Teorema de Pitágoras</h1>
+  <span>Explorador interactivo</span>
+</header>
+
+<div class="main">
+
+  <!-- ═══════════════ LEFT ═══════════════ -->
+  <div class="col-left">
+    <div class="canvas-wrap">
+      <canvas id="triCanvas"></canvas>
+      <div class="no-tri-msg" id="noTriMsg">
+        <strong>Triángulo no construible</strong>
+        <p>Los lados no satisfacen la desigualdad triangular</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <!-- A -->
+      <div class="slider-row">
+        <span class="side-label A">A</span>
+        <input type="range" id="slA" class="A" min="1" max="20" step="1" value="3">
+        <span class="val-badge A" id="vA">3</span>
+      </div>
+      <!-- B -->
+      <div class="slider-row">
+        <span class="side-label B">B</span>
+        <input type="range" id="slB" class="B" min="1" max="20" step="1" value="4">
+        <span class="val-badge B" id="vB">4</span>
+      </div>
+      <!-- C -->
+      <div class="slider-row">
+        <span class="side-label C">C</span>
+        <input type="range" id="slC" class="C" min="1" max="20" step="1" value="5">
+        <span class="val-badge C" id="vC">5</span>
+      </div>
+    </div>
+
+    <!-- Desigualdad triangular -->
+    <div class="ineq-panel">
+      <div class="ineq-title">Desigualdad Triangular</div>
+      <div class="ineq-rows" id="ineqRows"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════ RIGHT ═══════════════ -->
+  <div class="col-right">
+
+    <!-- Fórmula base estática -->
+    <div class="panel">
+      <div class="panel-title">Teorema de Pitágoras</div>
+      <div class="formula">
+        A<sup>2</sup> + B<sup>2</sup> = C<sup>2</sup>
+      </div>
+    </div>
+
+    <!-- Sustitución dinámica -->
+    <div class="panel" id="algPanel">
+      <div class="panel-title">Sustitución numérica</div>
+
+      <!-- Exponentes -->
+      <div class="formula-live" id="fLive"></div>
+      <hr class="divider">
+      <!-- Valores calculados -->
+      <div class="formula-expanded" id="fExpanded"></div>
+      <hr class="divider">
+
+      <!-- Badge resultado -->
+      <div class="result-badge gray" id="resultBadge">
+        <span class="icon">—</span>
+        <span id="resultText">Sin datos</span>
+      </div>
+    </div>
+
+    <!-- Tipo de triángulo -->
+    <div class="tri-type-panel dimmed" id="triTypePanel">
+      <div class="tri-type-dot" id="triTypeDot" style="background: var(--text-muted)"></div>
+      <div>
+        <div class="tri-type-label">Tipo según ángulos</div>
+        <div class="tri-type-name" id="triTypeName">—</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  Modifica los deslizadores y descubre cuándo se cumple A² + B² = C²
+</footer>
+
+<script>
+/* ─── CANVAS SETUP ───────────────────────────────────────────────── */
+const canvas = document.getElementById('triCanvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+  const wrap = canvas.parentElement;
+  canvas.width  = wrap.clientWidth;
+  canvas.height = wrap.clientHeight;
+  update();
+}
+window.addEventListener('resize', resizeCanvas);
+
+/* ─── CONTROLS ───────────────────────────────────────────────────── */
+const slA = document.getElementById('slA');
+const slB = document.getElementById('slB');
+const slC = document.getElementById('slC');
+const vA  = document.getElementById('vA');
+const vB  = document.getElementById('vB');
+const vC  = document.getElementById('vC');
+
+[slA, slB, slC].forEach(s => s.addEventListener('input', update));
+
+/* ─── COLORS ─────────────────────────────────────────────────────── */
+const COL = {
+  A: '#60a5fa',
+  B: '#a78bfa',
+  C: '#f472b6',
+  angle: '#e8eaf2',
+  right: '#fbbf24',
+  bg: '#181c27',
+  grid: '#2a3050'
+};
+
+/* ─── HELPERS ────────────────────────────────────────────────────── */
+function deg(r) { return r * 180 / Math.PI; }
+function rad(d) { return d * Math.PI / 180; }
+
+function isTriangle(a, b, c) {
+  return a + b > c && a + c > b && b + c > a;
+}
+
+function computeAngles(a, b, c) {
+  // Law of cosines: angle opposite to side c = C_angle
+  const C_ang = Math.acos((a*a + b*b - c*c) / (2*a*b));
+  const A_ang = Math.acos((b*b + c*c - a*a) / (2*b*c));
+  const B_ang = Math.PI - A_ang - C_ang;
+  return { A: A_ang, B: B_ang, C: C_ang };
+}
+
+/* ─── DRAW ───────────────────────────────────────────────────────── */
+function drawGrid() {
+  const W = canvas.width, H = canvas.height;
+  ctx.strokeStyle = COL.grid;
+  ctx.lineWidth = 0.5;
+  const step = 30;
+  for (let x = 0; x < W; x += step) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+  }
+  for (let y = 0; y < H; y += step) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+}
+
+function drawAngleArc(cx, cy, fromAng, toAng, r, color, isRight) {
+  if (isRight) {
+    // Draw square symbol
+    const mid = (fromAng + toAng) / 2;
+    const sz  = r * 0.6;
+    const dx1 = Math.cos(fromAng) * sz;
+    const dy1 = Math.sin(fromAng) * sz;
+    const dx2 = Math.cos(toAng) * sz;
+    const dy2 = Math.sin(toAng) * sz;
+    const mx  = dx1 + dx2;
+    const my  = dy1 + dy2;
+    ctx.strokeStyle = COL.right;
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx + dx1, cy + dy1);
+    ctx.lineTo(cx + mx,  cy + my);
+    ctx.lineTo(cx + dx2, cy + dy2);
+    ctx.stroke();
+  } else {
+    ctx.strokeStyle = color;
+    ctx.lineWidth   = 1.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, fromAng, toAng, false);
+    ctx.stroke();
+  }
+}
+
+function angleLabelPos(cx, cy, fromAng, toAng, r) {
+  const mid = (fromAng + toAng) / 2;
+  return {
+    x: cx + Math.cos(mid) * r * 1.8,
+    y: cy + Math.sin(mid) * r * 1.8
+  };
+}
+
+function drawSideLabel(x1, y1, x2, y2, label, color) {
+  const mx = (x1 + x2) / 2;
+  const my = (y1 + y2) / 2;
+  const nx = -(y2 - y1);
+  const ny =  (x2 - x1);
+  const len = Math.sqrt(nx*nx + ny*ny) || 1;
+  const off = 18;
+  ctx.fillStyle = color;
+  ctx.font = 'bold 13px "Crimson Pro", serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, mx + (nx/len)*off, my + (ny/len)*off);
+}
+
+// Returns [from, to] such that the arc sweeps the interior angle (< π)
+function sortAngles(d1, d2) {
+  let from = d1, to = d2;
+  if (from > to) [from, to] = [to, from];
+  // If the span > π, the short arc is on the other side; wrap around
+  if (to - from > Math.PI) {
+    const span = 2 * Math.PI - (to - from);
+    from = to;
+    to   = from + span;
+  }
+  return [from, to];
+}
+
+function drawTriangle(a, b, c, scale, ox, oy) {
+  // Convention (standard):
+  //   Angle A is at vertex PA, opposite side a
+  //   Angle B is at vertex PB, opposite side b
+  //   Angle C is at vertex PC, opposite side c  ← C is the hypotenuse candidate
+  //
+  // Construction:
+  //   PA = left base corner,  PB = right base corner,  PC = top apex
+  //   Base PA–PB has length c  (side c, opposite angle C at apex PC)
+  //   From PA upward with length b  (side b, opposite angle B at PB)
+  //   Angle at PA = angle_A
+
+  const angs = computeAngles(a, b, c);
+  const ang_A = angs.A; // angle at PA, between sides b (PA–PC) and c (PA–PB)
+
+  const PA = { x: ox,                y: oy };
+  const PB = { x: ox + c * scale,    y: oy };
+  // PC is reached from PA along side b, at angle_A above the base
+  const PC = {
+    x: ox + b * Math.cos(ang_A) * scale,
+    y: oy - b * Math.sin(ang_A) * scale
+  };
+
+  // Fill
+  ctx.beginPath();
+  ctx.moveTo(PA.x, PA.y);
+  ctx.lineTo(PB.x, PB.y);
+  ctx.lineTo(PC.x, PC.y);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(108,143,255,0.05)';
+  ctx.fill();
+
+  // Sides
+  const drawSide = (ax, ay, bx, by, col) => {
+    ctx.strokeStyle = col;
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.beginPath();
+    ctx.moveTo(ax, ay);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+  };
+
+  // side a = PB–PC  (opposite angle A at PA)
+  drawSide(PB.x, PB.y, PC.x, PC.y, COL.A);
+  // side b = PA–PC  (opposite angle B at PB)
+  drawSide(PA.x, PA.y, PC.x, PC.y, COL.B);
+  // side c = PA–PB  (opposite angle C at PC — the hypotenuse candidate)
+  drawSide(PA.x, PA.y, PB.x, PB.y, COL.C);
+
+  // Labels on sides
+  drawSideLabel(PB.x, PB.y, PC.x, PC.y, 'A', COL.A);
+  drawSideLabel(PA.x, PA.y, PC.x, PC.y, 'B', COL.B);
+  drawSideLabel(PA.x, PA.y, PB.x, PB.y, 'C', COL.C);
+
+  const ARC_R = Math.min(c * scale * 0.18, 28);
+  ctx.font = '11px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // ── Angle A at vertex PA (between sides b=PA–PC and c=PA–PB) ──
+  const ang_A_deg = Math.round(deg(angs.A));
+  const dirA1 = Math.atan2(PB.y - PA.y, PB.x - PA.x); // toward PB
+  const dirA2 = Math.atan2(PC.y - PA.y, PC.x - PA.x); // toward PC
+  const [fromA, toA] = sortAngles(dirA1, dirA2);
+  drawAngleArc(PA.x, PA.y, fromA, toA, ARC_R, COL.angle, Math.abs(ang_A_deg - 90) < 1);
+  const lA = angleLabelPos(PA.x, PA.y, fromA, toA, ARC_R);
+  ctx.fillStyle = Math.abs(ang_A_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillText(ang_A_deg + '°', lA.x, lA.y);
+
+  // ── Angle B at vertex PB (between sides a=PB–PC and c=PB–PA) ──
+  const ang_B_deg = Math.round(deg(angs.B));
+  const dirB1 = Math.atan2(PA.y - PB.y, PA.x - PB.x); // toward PA
+  const dirB2 = Math.atan2(PC.y - PB.y, PC.x - PB.x); // toward PC
+  const [fromB, toB] = sortAngles(dirB1, dirB2);
+  drawAngleArc(PB.x, PB.y, fromB, toB, ARC_R, COL.angle, Math.abs(ang_B_deg - 90) < 1);
+  const lB = angleLabelPos(PB.x, PB.y, fromB, toB, ARC_R);
+  ctx.fillStyle = Math.abs(ang_B_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillText(ang_B_deg + '°', lB.x, lB.y);
+
+  // ── Angle C at vertex PC (between sides a=PC–PB and b=PC–PA) ──
+  const ang_C_deg = Math.round(deg(angs.C));
+  const dirC1 = Math.atan2(PA.y - PC.y, PA.x - PC.x); // toward PA
+  const dirC2 = Math.atan2(PB.y - PC.y, PB.x - PC.x); // toward PB
+  const [fromC, toC] = sortAngles(dirC1, dirC2);
+  drawAngleArc(PC.x, PC.y, fromC, toC, ARC_R, COL.angle, Math.abs(ang_C_deg - 90) < 1);
+  const lC = angleLabelPos(PC.x, PC.y, fromC, toC, ARC_R);
+  ctx.fillStyle = Math.abs(ang_C_deg - 90) < 1 ? COL.right : COL.angle;
+  ctx.fillText(ang_C_deg + '°', lC.x, lC.y);
+
+  // Vertex dots
+  [PA, PB, PC].forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, 3.5, 0, 2*Math.PI);
+    ctx.fillStyle = COL.angle;
+    ctx.fill();
+  });
+}
+
+
+function drawBrokenSegments(a, b, c, scale, W, H) {
+  // Show 3 disconnected segments as "fallen"
+  const segs = [
+    { len: a * scale, col: COL.A, label: 'A', y: H * 0.38 },
+    { len: b * scale, col: COL.B, label: 'B', y: H * 0.58 },
+    { len: c * scale, col: COL.C, label: 'C', y: H * 0.78 },
+  ];
+  segs.forEach(s => {
+    const x0 = (W - s.len) / 2;
+    const x1 = x0 + s.len;
+    ctx.strokeStyle = s.col;
+    ctx.lineWidth   = 2.5;
+    ctx.lineCap     = 'round';
+    ctx.setLineDash([6, 4]);
+    ctx.beginPath();
+    ctx.moveTo(x0, s.y);
+    ctx.lineTo(x1, s.y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = s.col;
+    ctx.font = 'bold 13px "Crimson Pro", serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(s.label, x0 - 14, s.y);
+  });
+}
+
+/* ─── UPDATE INEQUALITY UI ───────────────────────────────────────── */
+function updateIneq(a, b, c, valid) {
+  const ineqs = [
+    { expr: `${a} + ${b} > ${c}`, ok: a + b > c },
+    { expr: `${a} + ${c} > ${b}`, ok: a + c > b },
+    { expr: `${b} + ${c} > ${a}`, ok: b + c > a },
+  ];
+  const div = document.getElementById('ineqRows');
+  div.innerHTML = ineqs.map(r =>
+    `<div class="ineq-row ${r.ok ? 'ok' : 'fail'}">
+       <div class="dot"></div>
+       <span>${r.expr} &nbsp;${r.ok ? '✓' : '✗'}</span>
+     </div>`
+  ).join('');
+}
+
+/* ─── UPDATE ALGEBRA UI ──────────────────────────────────────────── */
+function updateAlgebra(a, b, c, valid) {
+  const fLive     = document.getElementById('fLive');
+  const fExpanded = document.getElementById('fExpanded');
+  const badge     = document.getElementById('resultBadge');
+  const resultTxt = document.getElementById('resultText');
+  const triPanel  = document.getElementById('triTypePanel');
+  const triDot    = document.getElementById('triTypeDot');
+  const triName   = document.getElementById('triTypeName');
+
+  const a2 = a*a, b2 = b*b, c2 = c*c;
+
+  // Substitution row
+  fLive.innerHTML =
+    `<span class="fa">${a}<sup>2</sup></span> + ` +
+    `<span class="fb">${b}<sup>2</sup></span> = ` +
+    `<span class="fc">${c}<sup>2</sup></span>`;
+
+  fExpanded.innerHTML =
+    `<span class="na">${a2}</span> + ` +
+    `<span class="nb">${b2}</span> ` +
+    `<span style="color:var(--text-muted)">${a2+b2 === c2 ? '=' : (a2+b2 > c2 ? '>' : '<')}</span> ` +
+    `<span class="nc">${c2}</span>`;
+
+  if (!valid) {
+    badge.className    = 'result-badge gray';
+    badge.innerHTML    = `<span class="icon">—</span><span>Triángulo no construible</span>`;
+    triPanel.className = 'tri-type-panel dimmed';
+    triName.textContent = '—';
+    triDot.style.background = 'var(--text-muted)';
+    return;
+  }
+
+  // Check Pythagoras
+  const isRight = (a2 + b2 === c2);
+  // Angle opposite C
+  const angC_rad = Math.acos((a2 + b2 - c2) / (2*a*b));
+  const angC_deg = deg(angC_rad);
+
+  if (isRight) {
+    badge.className = 'result-badge green';
+    badge.innerHTML = `<span class="icon">✔️</span><span>Triángulo Rectángulo — ¡Pitágoras se cumple!</span>`;
+    triPanel.className = 'tri-type-panel';
+    triName.textContent = 'Rectángulo';
+    triDot.style.background = 'var(--green)';
+  } else {
+    badge.className = 'result-badge red';
+    badge.innerHTML = `<span class="icon">❌</span><span>No cumple A²+B²=C²</span>`;
+    // Determine acute vs obtuse
+    const isObtuse = angC_deg > 90;
+    triPanel.className = 'tri-type-panel';
+    if (isObtuse) {
+      triName.textContent = 'Obtusángulo';
+      triDot.style.background = 'var(--red)';
+    } else {
+      triName.textContent = 'Acutángulo';
+      triDot.style.background = 'var(--yellow)';
+    }
+  }
+}
+
+/* ─── MAIN UPDATE ────────────────────────────────────────────────── */
+function update() {
+  const a = parseInt(slA.value);
+  const b = parseInt(slB.value);
+  const c = parseInt(slC.value);
+
+  vA.textContent = a;
+  vB.textContent = b;
+  vC.textContent = c;
+
+  const W = canvas.width;
+  const H = canvas.height;
+
+  ctx.clearRect(0, 0, W, H);
+  drawGrid();
+
+  const valid = isTriangle(a, b, c);
+  const msg   = document.getElementById('noTriMsg');
+
+  const margin = 60;
+  const maxSide = Math.max(a, b, c);
+  const scale   = (Math.min(W, H) - margin * 2) / maxSide;
+
+  if (valid) {
+    msg.classList.remove('visible');
+
+    // Center the triangle
+    // PA at (ox, oy), PB at (ox + c*scale, oy), PC at (ox + b*cos(A)*scale, oy - b*sin(A)*scale)
+    const ang_A = Math.acos((b*b + c*c - a*a) / (2*b*c));
+    const pcx = b * Math.cos(ang_A) * scale; // PC x relative to PA
+    const pcy = b * Math.sin(ang_A) * scale; // PC height above base
+    const triW = Math.max(c * scale, pcx);
+    const triH = pcy;
+    const ox = (W - triW) / 2;
+    const oy = (H - triH) / 2 + triH;
+
+    drawTriangle(a, b, c, scale, ox, oy);
+  } else {
+    msg.classList.add('visible');
+    drawBrokenSegments(a, b, c, scale, W, H);
+  }
+
+  updateIneq(a, b, c, valid);
+  updateAlgebra(a, b, c, valid);
+}
+
+/* ─── INIT ───────────────────────────────────────────────────────── */
+window.addEventListener('load', () => {
+  resizeCanvas();
+});
+</script>
+</body>
+</html>

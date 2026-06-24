@@ -9,7 +9,24 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ── LIGHT MODE (default) ── */
   :root {
+    --bg:        #f4f6fb;
+    --surface:   #ffffff;
+    --surface2:  #eef1f8;
+    --border:    #d0d7ec;
+    --text:      #1a1f36;
+    --text-muted:#6b7399;
+    --green:     #059669;
+    --red:       #dc2626;
+    --gold:      #d97706;
+    --sideA:     #2563eb;
+    --sideB:     #7c3aed;
+    --sideC:     #db2777;
+  }
+
+  /* ── DARK MODE ── */
+  body.dark {
     --bg:        #0f1117;
     --surface:   #181c27;
     --surface2:  #1e2336;
@@ -43,6 +60,18 @@
   }
   header h1 { font-family: 'Crimson Pro', serif; font-size: 1.5rem; font-weight: 600; color: var(--text); }
   header span { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  .theme-toggle {
+    margin-left: auto;
+    display: flex; align-items: center; gap: .45rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 20px; padding: .3rem .75rem;
+    cursor: pointer; font-size: .72rem; font-weight: 600;
+    color: var(--text-muted); transition: border-color .2s, color .2s;
+    white-space: nowrap; user-select: none;
+  }
+  .theme-toggle:hover { border-color: var(--text-muted); color: var(--text); }
+  .theme-toggle .tog-icon { font-size: 1rem; line-height: 1; }
 
   /* ══ EXPLORER VIEW ══ */
   .main {
@@ -114,9 +143,9 @@
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.4rem; }
   .panel-title { font-size: .62rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-muted); margin-bottom: .75rem; font-weight: 600; }
 
-  .formula-roles { font-family: 'Crimson Pro', serif; font-size: 1.35rem; font-weight: 600; text-align: center; padding: .3rem 0; line-height: 1.3; }
+  .formula-roles { font-family: 'Crimson Pro', serif; font-size: 1.05rem; font-weight: 600; text-align: center; padding: .3rem 0; line-height: 1.3; white-space: nowrap; overflow: hidden; }
   .formula-roles sup { font-size: .65em; }
-  .formula-roles sub { font-size: .6em; vertical-align: baseline; position: relative; bottom: -.25em; }
+  .formula-roles sub { font-size: .58em; vertical-align: baseline; position: relative; bottom: -.2em; }
   .formula-live { font-family: 'Crimson Pro', serif; font-size: 1.45rem; font-weight: 600; text-align: center; padding: .3rem 0; }
   .formula-live sup { font-size: .7em; }
   .formula-expanded { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; text-align: center; padding: .3rem 0; }
@@ -250,43 +279,56 @@
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     gap: 1.1rem; padding: 2rem;
-    background: rgba(15,17,23,0.82);
-    backdrop-filter: blur(2px);
+    background: linear-gradient(145deg, rgba(224,231,255,0.97) 0%, rgba(237,233,254,0.97) 100%);
+    backdrop-filter: blur(4px);
     border-radius: 12px;
     transition: opacity .4s, visibility .4s;
     z-index: 10;
   }
+  body.dark #instructionsOverlay {
+    background: linear-gradient(145deg, rgba(30,35,60,0.96) 0%, rgba(25,20,50,0.96) 100%);
+  }
   #instructionsOverlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
   .inst-icon {
-    font-size: 2.8rem; color: var(--text-muted);
+    font-size: 2.8rem;
     font-family: 'Crimson Pro', serif; line-height: 1;
-    opacity: .5;
+    color: #4f46e5;
   }
+  body.dark .inst-icon { color: #a78bfa; }
+
   .inst-title {
     font-family: 'Crimson Pro', serif; font-size: 1.35rem;
-    font-weight: 600; color: var(--text); text-align: center;
+    font-weight: 600; color: #1e1b4b; text-align: center;
   }
+  body.dark .inst-title { color: #e8eaf2; }
+
   .inst-steps {
     display: flex; flex-direction: column; gap: .6rem; width: 100%; max-width: 340px;
   }
   .inst-step {
     display: flex; align-items: flex-start; gap: .65rem;
-    font-size: .82rem; color: var(--text-muted); line-height: 1.4;
+    font-size: .82rem; color: #3730a3; line-height: 1.4;
   }
+  body.dark .inst-step { color: #a5b4fc; }
+
   .inst-n {
     flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
-    background: var(--surface2); border: 1px solid var(--border);
+    background: #4f46e5; border: none;
     display: flex; align-items: center; justify-content: center;
-    font-size: .7rem; font-weight: 700; color: var(--text-muted);
+    font-size: .7rem; font-weight: 700; color: #fff;
     margin-top: .05rem;
   }
+  body.dark .inst-n { background: #6d28d9; }
+
   .inst-hint {
-    font-size: .72rem; color: var(--text-muted);
-    text-align: center; opacity: .7;
+    font-size: .72rem; color: #6366f1;
+    text-align: center;
     animation: pulse 2s ease-in-out infinite;
   }
-  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.9} }
+  body.dark .inst-hint { color: #818cf8; }
+
+  @keyframes pulse { 0%,100%{opacity:.4} 50%{opacity:.95} }
 
   @media (max-width: 780px) {
     .main { grid-template-columns: 1fr; }
@@ -302,6 +344,10 @@
 <header>
   <h1>Teorema de Pitágoras</h1>
   <span>Explorador interactivo</span>
+  <button class="theme-toggle" id="themeToggle">
+    <span class="tog-icon" id="togIcon">🌙</span>
+    <span id="togLabel">Modo oscuro</span>
+  </button>
 </header>
 
 <!-- ══════════════ EXPLORER VIEW ══════════════ -->
@@ -464,10 +510,33 @@ function onSliderMove() {
 [slA, slB, slC].forEach(s => s.addEventListener('input', onSliderMove));
 
 /* ══════════════════════════════════════════════════
-   PALETTE
+   PALETTE — reads current theme dynamically
 ══════════════════════════════════════════════════ */
-const SIDE_COLOR = { A:'#60a5fa', B:'#a78bfa', C:'#f472b6' };
-const COL = { angle:'#e8eaf2', right:'#fbbf24', grid:'#1e2336', gap:'#f87171', gold:'#fbbf24' };
+// Side colors are defined in CSS variables; we read them at draw time
+function getSideColor(side) {
+  return getComputedStyle(document.documentElement).getPropertyValue('--side'+side).trim();
+}
+function getThemeColors() {
+  const isDark = document.body.classList.contains('dark');
+  return {
+    angle: isDark ? '#c8ccde' : '#1a1f36',
+    right: isDark ? '#fbbf24' : '#d97706',
+    grid:  isDark ? '#1e2336' : '#e2e7f5',
+    gap:   isDark ? '#f87171' : '#dc2626',
+    gold:  isDark ? '#fbbf24' : '#d97706',
+    triLow: isDark ? 'rgba(108,143,255,0.06)' : 'rgba(79,110,242,0.06)',
+  };
+}
+
+/* ══════════════════════════════════════════════════
+   THEME TOGGLE
+══════════════════════════════════════════════════ */
+document.getElementById('themeToggle').addEventListener('click', () => {
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('togIcon').textContent  = isDark ? '☀️' : '🌙';
+  document.getElementById('togLabel').textContent = isDark ? 'Modo claro' : 'Modo oscuro';
+  if (hasInteracted) update();
+});
 
 /* ══════════════════════════════════════════════════
    MATH
@@ -487,9 +556,9 @@ function triKey(a,b,c) { return [a,b,c].sort((x,y)=>x-y).join('-'); }
 
 function getRoles(a,b,c) {
   const sides = [
-    {label:'A', val:a, color:SIDE_COLOR.A},
-    {label:'B', val:b, color:SIDE_COLOR.B},
-    {label:'C', val:c, color:SIDE_COLOR.C},
+    {label:'A', val:a, color:getSideColor('A')},
+    {label:'B', val:b, color:getSideColor('B')},
+    {label:'C', val:c, color:getSideColor('C')},
   ];
   const sorted = [...sides].sort((x,y)=>y.val-x.val);
   return { hyp:sorted[0], cat1:sorted[1], cat2:sorted[2] };
@@ -505,6 +574,7 @@ function computeAngles(a,b,c) {
    DRAW HELPERS
 ══════════════════════════════════════════════════ */
 function drawGrid(c2d, W, H) {
+  const COL = getThemeColors();
   c2d.strokeStyle = COL.grid; c2d.lineWidth = 0.5;
   for (let x=0;x<W;x+=28){ c2d.beginPath();c2d.moveTo(x,0);c2d.lineTo(x,H);c2d.stroke(); }
   for (let y=0;y<H;y+=28){ c2d.beginPath();c2d.moveTo(0,y);c2d.lineTo(W,y);c2d.stroke(); }
@@ -523,6 +593,7 @@ function angleLabelPos(cx,cy,from,to,r) {
 }
 
 function drawAngleArc(c2d,cx,cy,from,to,r,isRight) {
+  const COL = getThemeColors();
   if(isRight){
     const sz=r*0.72;
     const dx1=Math.cos(from)*sz, dy1=Math.sin(from)*sz;
@@ -552,6 +623,8 @@ function drawSideLabel(c2d,x1,y1,x2,y2,label,color,cx,cy) {
    DRAW TRIANGLE (reusable, takes a 2d context + bounds)
 ══════════════════════════════════════════════════ */
 function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
+  const COL = getThemeColors();
+  const SC = { A: getSideColor('A'), B: getSideColor('B'), C: getSideColor('C') };
   const angs = computeAngles(a,b,c);
   const ang_A = angs.A;
   const scaleX = (W-margin*2) / Math.max(c, b*Math.cos(ang_A));
@@ -567,13 +640,13 @@ function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
 
   // fill
   c2d.beginPath(); c2d.moveTo(PA.x,PA.y); c2d.lineTo(PB.x,PB.y); c2d.lineTo(PC.x,PC.y);
-  c2d.closePath(); c2d.fillStyle='rgba(108,143,255,0.06)'; c2d.fill();
+  c2d.closePath(); c2d.fillStyle=COL.triLow; c2d.fill();
 
   const sidePairs = { A:[PB,PC], B:[PA,PC], C:[PA,PB] };
 
   ['A','B','C'].forEach(lbl => {
     const [P1,P2]=sidePairs[lbl];
-    const col=SIDE_COLOR[lbl], isHyp=lbl===hypLabel;
+    const col=SC[lbl], isHyp=lbl===hypLabel;
     if(isHyp){
       c2d.strokeStyle=COL.gold; c2d.lineWidth=7; c2d.lineCap='round';
       c2d.globalAlpha=0.22;
@@ -589,7 +662,7 @@ function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
   const centX=(PA.x+PB.x+PC.x)/3, centY=(PA.y+PB.y+PC.y)/3;
   ['A','B','C'].forEach(lbl=>{
     const [P1,P2]=sidePairs[lbl];
-    drawSideLabel(c2d,P1.x,P1.y,P2.x,P2.y,lbl,SIDE_COLOR[lbl],centX,centY);
+    drawSideLabel(c2d,P1.x,P1.y,P2.x,P2.y,lbl,SC[lbl],centX,centY);
   });
 
   const shortPx=Math.min(
@@ -622,6 +695,8 @@ function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
    DRAW OPEN CHAIN
 ══════════════════════════════════════════════════ */
 function drawOpenChain(a,b,c,W,H) {
+  const COL = getThemeColors();
+  const SC  = { A: getSideColor('A'), B: getSideColor('B'), C: getSideColor('C') };
   const fixedAngle=Math.PI*0.55, margin=60;
   const sc=(Math.min(W,H)-margin*2)/Math.max(a,b,c);
   const P0={x:W*0.18,y:H*0.72};
@@ -637,9 +712,9 @@ function drawOpenChain(a,b,c,W,H) {
     ctx.beginPath(); ctx.moveTo(ax,ay); ctx.lineTo(bx,by); ctx.stroke();
     ctx.setLineDash([]);
   };
-  side(P0.x,P0.y,P1.x,P1.y,SIDE_COLOR.C,false);
-  side(P0.x,P0.y,P2.x,P2.y,SIDE_COLOR.B,false);
-  side(P1.x,P1.y,P3.x,P3.y,SIDE_COLOR.A,false);
+  side(P0.x,P0.y,P1.x,P1.y,SC.C,false);
+  side(P0.x,P0.y,P2.x,P2.y,SC.B,false);
+  side(P1.x,P1.y,P3.x,P3.y,SC.A,false);
 
   const gapDist=Math.hypot(P3.x-P2.x,P3.y-P2.y);
   if(gapDist>2){
@@ -651,7 +726,7 @@ function drawOpenChain(a,b,c,W,H) {
 
   [P0,P1,P2,P3].forEach((p,i)=>{
     ctx.beginPath(); ctx.arc(p.x,p.y,4,0,2*Math.PI);
-    ctx.fillStyle=i===2?SIDE_COLOR.B:(i===3?SIDE_COLOR.A:COL.angle); ctx.fill();
+    ctx.fillStyle=i===2?SC.B:(i===3?SC.A:COL.angle); ctx.fill();
   });
   const lbl=(ax,ay,bx,by,txt,col)=>{
     const mx=(ax+bx)/2,my=(ay+by)/2;
@@ -660,9 +735,9 @@ function drawOpenChain(a,b,c,W,H) {
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(txt,mx+nx*20,my+ny*20);
   };
-  lbl(P0.x,P0.y,P1.x,P1.y,'C',SIDE_COLOR.C);
-  lbl(P0.x,P0.y,P2.x,P2.y,'B',SIDE_COLOR.B);
-  lbl(P1.x,P1.y,P3.x,P3.y,'A',SIDE_COLOR.A);
+  lbl(P0.x,P0.y,P1.x,P1.y,'C',SC.C);
+  lbl(P0.x,P0.y,P2.x,P2.y,'B',SC.B);
+  lbl(P1.x,P1.y,P3.x,P3.y,'A',SC.A);
 }
 
 /* ══════════════════════════════════════════════════

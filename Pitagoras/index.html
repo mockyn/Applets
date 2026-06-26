@@ -98,10 +98,10 @@
     grid-template-columns: 24px 1fr auto;
     align-items: center; gap: .75rem;
   }
-  .side-label { font-family: 'Crimson Pro', serif; font-size: 1.3rem; font-weight: 600; text-align: center; }
-  .side-label.A { color: var(--sideA); }
-  .side-label.B { color: var(--sideB); }
-  .side-label.C { color: var(--sideC); }
+  .side-dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    flex-shrink: 0; display: inline-block;
+  }
 
   input[type=range] {
     -webkit-appearance: none; appearance: none;
@@ -182,18 +182,31 @@
     font-family: 'Crimson Pro', serif; font-size: 1rem; font-weight: 600;
     color: var(--text-muted); text-align: center; width: 18px;
   }
+  .reg-color-header {
+    display: grid;
+    grid-template-columns: 18px 1fr 1fr 1fr;
+    gap: .4rem; padding: 0 0 .1rem;
+  }
+  .reg-ch-spacer { /* aligns with reg-num */ }
+  .reg-ch-dot {
+    height: 6px; border-radius: 3px;
+  }
+
   .reg-input {
     font-family: 'JetBrains Mono', monospace; font-size: .85rem;
     background: var(--surface2); border: 1px solid var(--border);
+    border-top-width: 3px;
     border-radius: 6px; color: var(--text); text-align: center;
     padding: .3rem .2rem; width: 100%; outline: none;
     transition: border-color .2s;
     -moz-appearance: textfield;
   }
+  .reg-input.A { border-top-color: var(--sideA); }
+  .reg-input.B { border-top-color: var(--sideB); }
+  .reg-input.C { border-top-color: var(--sideC); }
   .reg-input::-webkit-inner-spin-button,
   .reg-input::-webkit-outer-spin-button { -webkit-appearance: none; }
   .reg-input:focus { border-color: var(--text-muted); }
-  .reg-input.valid-side { border-color: var(--green); }
   .reg-status { font-size: 1.1rem; width: 22px; text-align: center; }
   .reg-use-btn {
     font-size: .6rem; font-weight: 700; text-transform: uppercase;
@@ -360,7 +373,7 @@
         <div class="inst-icon">△</div>
         <div class="inst-title">Explora el Teorema de Pitágoras</div>
         <div class="inst-steps">
-          <div class="inst-step"><span class="inst-n">1</span>Mueve los deslizadores para cambiar los lados A, B y C</div>
+          <div class="inst-step"><span class="inst-n">1</span>Mueve los deslizadores de colores para cambiar los lados del triángulo</div>
           <div class="inst-step"><span class="inst-n">2</span>Observa si los lados forman un triángulo rectángulo</div>
           <div class="inst-step"><span class="inst-n">3</span>Encuentra 3 triángulos rectángulos distintos y regístralos</div>
         </div>
@@ -369,7 +382,7 @@
     </div>
     <div class="controls">
       <div class="slider-row">
-        <span class="side-label A">A</span>
+        <span class="side-dot" style="background:var(--sideA)"></span>
         <input type="range" id="slA" class="A" min="1" max="20" step="1" value="1">
         <div class="slider-meta">
           <span class="val-badge A" id="vA">1</span>
@@ -377,7 +390,7 @@
         </div>
       </div>
       <div class="slider-row">
-        <span class="side-label B">B</span>
+        <span class="side-dot" style="background:var(--sideB)"></span>
         <input type="range" id="slB" class="B" min="1" max="20" step="1" value="1">
         <div class="slider-meta">
           <span class="val-badge B" id="vB">1</span>
@@ -385,7 +398,7 @@
         </div>
       </div>
       <div class="slider-row">
-        <span class="side-label C">C</span>
+        <span class="side-dot" style="background:var(--sideC)"></span>
         <input type="range" id="slC" class="C" min="1" max="20" step="1" value="1">
         <div class="slider-meta">
           <span class="val-badge C" id="vC">1</span>
@@ -403,8 +416,6 @@
 
     <div class="panel">
       <div class="panel-title">Sustitución numérica</div>
-      <div class="formula-live" id="fLive"></div>
-      <hr class="divider">
       <div class="formula-expanded" id="fExpanded"></div>
       <hr class="divider">
       <div class="result-badge gray" id="resultBadge">
@@ -415,30 +426,37 @@
     <!-- REGISTRO -->
     <div class="registro-panel">
       <div class="registro-title">Mis triángulos rectángulos</div>
+      <!-- colour legend for the three inputs -->
+      <div class="reg-color-header">
+        <div class="reg-ch-spacer"></div>
+        <span class="reg-ch-dot" style="background:var(--sideA)"></span>
+        <span class="reg-ch-dot" style="background:var(--sideB)"></span>
+        <span class="reg-ch-dot" style="background:var(--sideC)"></span>
+      </div>
 
       <div class="registro-row" id="regRow0">
         <div class="reg-num">1</div>
-        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="0" data-col="0">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="0" data-col="1">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="0" data-col="2">
+        <input class="reg-input A" type="number" min="1" max="20" placeholder="—" data-row="0" data-col="0">
+        <input class="reg-input B" type="number" min="1" max="20" placeholder="—" data-row="0" data-col="1">
+        <input class="reg-input C" type="number" min="1" max="20" placeholder="—" data-row="0" data-col="2">
         <span class="reg-status" id="regStatus0"></span>
         <button class="reg-use-btn" data-row="0">Usar actuales</button>
       </div>
 
       <div class="registro-row" id="regRow1">
         <div class="reg-num">2</div>
-        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="1" data-col="0">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="1" data-col="1">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="1" data-col="2">
+        <input class="reg-input A" type="number" min="1" max="20" placeholder="—" data-row="1" data-col="0">
+        <input class="reg-input B" type="number" min="1" max="20" placeholder="—" data-row="1" data-col="1">
+        <input class="reg-input C" type="number" min="1" max="20" placeholder="—" data-row="1" data-col="2">
         <span class="reg-status" id="regStatus1"></span>
         <button class="reg-use-btn" data-row="1">Usar actuales</button>
       </div>
 
       <div class="registro-row" id="regRow2">
         <div class="reg-num">3</div>
-        <input class="reg-input" type="number" min="1" max="20" placeholder="A" data-row="2" data-col="0">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="B" data-row="2" data-col="1">
-        <input class="reg-input" type="number" min="1" max="20" placeholder="C" data-row="2" data-col="2">
+        <input class="reg-input A" type="number" min="1" max="20" placeholder="—" data-row="2" data-col="0">
+        <input class="reg-input B" type="number" min="1" max="20" placeholder="—" data-row="2" data-col="1">
+        <input class="reg-input C" type="number" min="1" max="20" placeholder="—" data-row="2" data-col="2">
         <span class="reg-status" id="regStatus2"></span>
         <button class="reg-use-btn" data-row="2">Usar actuales</button>
       </div>
@@ -608,15 +626,15 @@ function drawAngleArc(c2d,cx,cy,from,to,r,isRight) {
   }
 }
 
-function drawSideLabel(c2d,x1,y1,x2,y2,label,color,cx,cy) {
+function drawSideLabel(c2d,x1,y1,x2,y2,text,color,cx,cy) {
   const mx=(x1+x2)/2, my=(y1+y2)/2;
   let nx=-(y2-y1), ny=(x2-x1), len=Math.sqrt(nx*nx+ny*ny)||1;
   nx/=len; ny/=len;
   if(nx*(cx-mx)+ny*(cy-my)>0){nx=-nx;ny=-ny;}
   c2d.fillStyle=color;
-  c2d.font="bold 15px 'Crimson Pro', serif";
+  c2d.font="bold 13px 'Inter', sans-serif";
   c2d.textAlign='center'; c2d.textBaseline='middle';
-  c2d.fillText(label, mx+nx*20, my+ny*20);
+  c2d.fillText(text, mx+nx*22, my+ny*22);
 }
 
 /* ══════════════════════════════════════════════════
@@ -625,6 +643,8 @@ function drawSideLabel(c2d,x1,y1,x2,y2,label,color,cx,cy) {
 function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
   const COL = getThemeColors();
   const SC = { A: getSideColor('A'), B: getSideColor('B'), C: getSideColor('C') };
+  // side values keyed by label: side A (PB-PC)=a, side B (PA-PC)=b, side C (PA-PB)=c
+  const VALS = { A: a, B: b, C: c };
   const angs = computeAngles(a,b,c);
   const ang_A = angs.A;
   const scaleX = (W-margin*2) / Math.max(c, b*Math.cos(ang_A));
@@ -644,25 +664,18 @@ function drawTriangleOnCtx(c2d, a, b, c, W, H, hypLabel, margin=56) {
 
   const sidePairs = { A:[PB,PC], B:[PA,PC], C:[PA,PB] };
 
+  // Draw all sides with uniform stroke (no gold highlight)
   ['A','B','C'].forEach(lbl => {
     const [P1,P2]=sidePairs[lbl];
-    const col=SC[lbl], isHyp=lbl===hypLabel;
-    if(isHyp){
-      c2d.strokeStyle=COL.gold; c2d.lineWidth=7; c2d.lineCap='round';
-      c2d.globalAlpha=0.22;
-      c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
-      c2d.globalAlpha=1;
-      c2d.strokeStyle=COL.gold; c2d.lineWidth=4.5; c2d.lineCap='round';
-      c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
-    }
-    c2d.strokeStyle=col; c2d.lineWidth=isHyp?2.5:3; c2d.lineCap='round';
+    c2d.strokeStyle=SC[lbl]; c2d.lineWidth=3; c2d.lineCap='round';
     c2d.beginPath(); c2d.moveTo(P1.x,P1.y); c2d.lineTo(P2.x,P2.y); c2d.stroke();
   });
 
+  // Side value labels: "X cm" in side colour
   const centX=(PA.x+PB.x+PC.x)/3, centY=(PA.y+PB.y+PC.y)/3;
   ['A','B','C'].forEach(lbl=>{
     const [P1,P2]=sidePairs[lbl];
-    drawSideLabel(c2d,P1.x,P1.y,P2.x,P2.y,lbl,SC[lbl],centX,centY);
+    drawSideLabel(c2d,P1.x,P1.y,P2.x,P2.y, VALS[lbl]+' cm', SC[lbl], centX, centY);
   });
 
   const shortPx=Math.min(
@@ -735,9 +748,9 @@ function drawOpenChain(a,b,c,W,H) {
     ctx.textAlign='center'; ctx.textBaseline='middle';
     ctx.fillText(txt,mx+nx*20,my+ny*20);
   };
-  lbl(P0.x,P0.y,P1.x,P1.y,'C',SC.C);
-  lbl(P0.x,P0.y,P2.x,P2.y,'B',SC.B);
-  lbl(P1.x,P1.y,P3.x,P3.y,'A',SC.A);
+  lbl(P0.x,P0.y,P1.x,P1.y, c+' cm', SC.C);
+  lbl(P0.x,P0.y,P2.x,P2.y, b+' cm', SC.B);
+  lbl(P1.x,P1.y,P3.x,P3.y, a+' cm', SC.A);
 }
 
 /* ══════════════════════════════════════════════════
@@ -765,11 +778,6 @@ function updateAlgebra(a,b,c,valid) {
     `<span style="color:${c1c}">Cateto<sub>1</sub><sup>2</sup></span>`+
     ` + <span style="color:${c2c}">Cateto<sub>2</sub><sup>2</sup></span>`+
     ` = <span style="color:${hc}">Hipotenusa<sup>2</sup></span>`;
-
-  document.getElementById('fLive').innerHTML=
-    `<span style="color:${c1c}">${cat1.label}<sup>2</sup></span>`+
-    ` + <span style="color:${c2c}">${cat2.label}<sup>2</sup></span>`+
-    ` = <span style="color:${hc}">${hyp.label}<sup>2</sup></span>`;
 
   const h2=hyp.val*hyp.val, c12=cat1.val*cat1.val, c22=cat2.val*cat2.val, sum=c12+c22;
   const sym=sum===h2?'=':(sum>h2?'>':'<');
@@ -941,14 +949,17 @@ function showCelebration(results) {
     const roles=getRoles(r.a,r.b,r.c);
     drawTriangleOnCtx(c2d,r.a,r.b,r.c,cel.width,cel.height,roles.hyp.label,36);
 
-    // Label
+    // Label — colour swatches with values, no letters
     const lbl=document.getElementById('celLabel'+i);
+    const sc0=getSideColor('A'), sc1=getSideColor('B'), sc2=getSideColor('C');
+    const s=[r.a,r.b,r.c].map(x=>x*x).sort((x,y)=>x-y);
+    const verif = s[0]+s[1]===s[2] ? '✔' : '';
     lbl.innerHTML=
-      `<span class="la">A=${r.a}</span> · `+
-      `<span class="lb">B=${r.b}</span> · `+
-      `<span class="lc">C=${r.c}</span><br>`+
+      `<span style="color:${sc0};font-weight:700">${r.a} cm</span> · `+
+      `<span style="color:${sc1};font-weight:700">${r.b} cm</span> · `+
+      `<span style="color:${sc2};font-weight:700">${r.c} cm</span><br>`+
       `<span style="color:var(--text-muted);font-size:.72rem">`+
-      `${r.a}²+${r.b}²=${r.c}² &nbsp;✔</span>`;
+      `${s[0]}+${s[1]}=${s[2]} &nbsp;${verif}</span>`;
   });
 
   launchConfetti();
